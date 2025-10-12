@@ -4,17 +4,27 @@
       Posts ({{ postsStore.totalPostsLength }})
       <Loader v-if="postsStore.loading" class="animate-spin" />
     </h1>
-    <PostsList />
+    <PostsList @isOpen="onClickPlus" />
   </vContainer>
+  <Modal :open="openModal" @close="onCloseModal">
+    <template v-slot:header>Header</template>
+    <NewPostForm />
+    <template v-slot:footer>Footer</template>
+  </Modal>
 </template>
 
 <script setup>
+import Modal from '@/components/modals/vModal.vue'
+import NewPostForm from '@/components/forms/NewPostForm.vue'
+import vContainer from '@/components/shared/vContainer.vue'
 import PostsList from '@/components/posts/PostsList.vue'
 import { usePostsStore } from '@/stores/postsStore'
-import vContainer from '@/components/shared/vContainer.vue'
 import { Loader } from 'lucide-vue-next'
+import { ref } from 'vue'
 
 const postsStore = usePostsStore()
-</script>
+const openModal = ref(false)
 
-<style scoped></style>
+const onClickPlus = (bool) => (openModal.value = bool)
+const onCloseModal = () => (openModal.value = false)
+</script>

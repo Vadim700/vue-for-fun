@@ -1,7 +1,8 @@
 <template>
   <header class="header flex justify-between items-center py-4 px-16 bg-amber-900 text-white">
     <RouterLink to="/">
-      <div class="header__logo text-2xl"></div>
+      <div class="header__logo text-2xl">
+      </div>
     </RouterLink>
     <nav class="header__menu menu">
       <ul class="menu__list flex gap-12 text-2xl">

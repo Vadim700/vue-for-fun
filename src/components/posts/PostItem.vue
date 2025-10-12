@@ -1,6 +1,6 @@
 <template>
   <slot>
-    <div class="border rounded-sm p-2 relative">
+    <div class="root rounded-sm p-2 relative">
       <button
         @click="deletePost(post.id)"
         class="absolute right-2 top-2 cursor-pointer hover:text-red-500 hover:rotate-90 transition-all ease-in-out duration-200"
@@ -32,4 +32,10 @@ const props = defineProps({
 })
 </script>
 
-<style lang="scss"></style>
+<style lang="scss" scoped>
+.root {
+  -webkit-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+  -moz-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+  box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+}
+</style>
