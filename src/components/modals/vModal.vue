@@ -6,15 +6,20 @@
       @click="handleBackdropClick"
     >
       <div
-        class="border max-w-[40vw] max-h-[400px] absolute left-[50%] top-[50%] -translate-[50%] bg-white"
+        class="border max-w-[40vw] min-w-[350px] absolute left-[50%] top-[50%] -translate-[50%] bg-white px-6 py-4"
         ref="modalInner"
         @click.stop
       >
-        <button class="absolute top-2 right-2 cursor-pointer" @click="$emit('close')">
+        <button
+          class="absolute top-2 right-2 cursor-pointer hover:text-red-500"
+          @click="$emit('close')"
+        >
           <X />
         </button>
-        <slot name="header"></slot>
-        <slot></slot>
+        <h3 class="text-3xl text-center mb-4">
+          <slot name="header"></slot>
+        </h3>
+        <slot> </slot>
         <slot name="footer"></slot>
       </div>
     </div>

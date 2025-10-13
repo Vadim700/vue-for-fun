@@ -7,9 +7,9 @@
     <PostsList @isOpen="onClickPlus" />
   </vContainer>
   <Modal :open="openModal" @close="onCloseModal">
-    <template v-slot:header>Header</template>
+    <template v-slot:header>Add new Post</template>
     <NewPostForm />
-    <template v-slot:footer>Footer</template>
+    <template v-slot:footer></template>
   </Modal>
 </template>
 
