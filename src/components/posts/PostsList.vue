@@ -2,7 +2,7 @@
   <div class="list">
     <PostItem v-for="post in postsStore.posts" :key="post.id" :post="post" />
     <button
-      class="list__button rounded-sm p-2 min-h-[200px] grid place-content-center cursor-pointer group"
+      class="list__button rounded-sm p-2 min-h-[200px] grid place-content-center cursor-pointer group outline-0"
       @click="onClickPlus"
     >
       <Plus

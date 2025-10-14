@@ -6,7 +6,7 @@
       @click="handleBackdropClick"
     >
       <div
-        class="border max-w-[40vw] min-w-[350px] absolute left-[50%] top-[50%] -translate-[50%] bg-white px-6 py-4"
+        class="border w-full max-w-[500px] min-w-[350px] absolute left-[50%] top-[50%] -translate-[50%] bg-white px-6 py-4 pt-8"
         ref="modalInner"
         @click.stop
       >
@@ -19,7 +19,7 @@
         <h3 class="text-3xl text-center mb-4">
           <slot name="header"></slot>
         </h3>
-        <slot> </slot>
+        <slot></slot>
         <slot name="footer"></slot>
       </div>
     </div>

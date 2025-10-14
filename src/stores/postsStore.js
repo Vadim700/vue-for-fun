@@ -10,7 +10,6 @@ export const usePostsStore = defineStore('postsStore', {
     totalPostsLength() {
       return this.posts.length
     },
-
   },
   actions: {
     async getPosts() {
@@ -30,7 +29,7 @@ export const usePostsStore = defineStore('postsStore', {
     },
 
     addPost(payload) {
-      console.log(payload);
+      this.posts.push(payload)
     }
   },
 })

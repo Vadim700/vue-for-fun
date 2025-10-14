@@ -8,7 +8,7 @@
   </vContainer>
   <Modal :open="openModal" @close="onCloseModal">
     <template v-slot:header>Add new Post</template>
-    <NewPostForm />
+    <NewPostForm @close="onCloseModal" />
     <template v-slot:footer></template>
   </Modal>
 </template>

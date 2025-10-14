@@ -2,7 +2,7 @@
   <slot>
     <AnimatePresence mode="popLayout">
       <motion.div
-        class="root rounded-sm p-2 relative"
+        class="root rounded-sm p-2 relative min-h-[200px]"
         :initial="{ opacity: 0, scale: 0 }"
         :animate="{ opacity: 1, scale: 1 }"
         :exit="{ opacity: 0, scale: 0 }"
