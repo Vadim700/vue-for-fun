@@ -29,7 +29,9 @@ export const usePostsStore = defineStore('postsStore', {
     },
 
     addPost(payload) {
-      this.posts.push(payload)
+      const maxId = this.posts.reduce((max, post) => Math.max(max, post.id), 0);
+      const newPost = { ...payload, id: maxId + 1 };
+      this.posts.push(newPost);
     }
   },
 })
