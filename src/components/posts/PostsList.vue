@@ -1,16 +1,39 @@
 <template>
-  <div class="list">
-    <PostItem v-for="post in postsStore.posts" :key="post.id" :post="post" />
-    <button
-      class="list__button rounded-sm p-2 min-h-[200px] grid place-content-center cursor-pointer group outline-0"
-      @click="onClickPlus"
-    >
-      <Plus
-        size="120"
-        stroke-width="1"
-        class="group-hover:text-red-500 group-hover:scale-[1.3] transition-all duration-200 ease-in-out"
-      />
-    </button>
+  <div class="">
+    <AnimatePresence mode="popLayout">
+      <motion.div
+        class="list"
+        :initial="{ opacity: 0, y: 20 }"
+        :animate="{ opacity: 1, y: 0 }"
+        :exit="{ opacity: 0, scale: 0.8 }"
+        :transition="{ duration: 0.5, ease: 'easeOut' }"
+      >
+        <motion.div
+          v-for="(post, index) in postsStore.posts"
+          :key="post.id"
+          :initial="{ opacity: 0, y: 20 }"
+          :animate="{ opacity: 1, y: 0 }"
+          :exit="{ opacity: 0, scale: 0.8 }"
+          :transition="{
+            duration: 0.5,
+            delay: index * 0.1,
+            ease: 'easeOut',
+          }"
+        >
+          <PostItem :post="post" />
+        </motion.div>
+        <button
+          class="list__button rounded-sm p-2 min-h-[200px] grid place-content-center cursor-pointer group outline-0"
+          @click="onClickPlus"
+        >
+          <Plus
+            size="120"
+            stroke-width="1"
+            class="group-hover:text-red-500 group-hover:scale-[1.3] transition-all duration-200 ease-in-out"
+          />
+        </button>
+      </motion.div>
+    </AnimatePresence>
   </div>
 </template>
 
@@ -18,6 +41,7 @@
 import { Plus } from 'lucide-vue-next'
 import PostItem from './PostItem.vue'
 import { usePostsStore } from '@/stores/postsStore'
+import { motion, AnimatePresence } from 'motion-v'
 
 const postsStore = usePostsStore()
 const postsList = postsStore.getPosts()

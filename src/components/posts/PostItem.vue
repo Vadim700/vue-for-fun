@@ -1,11 +1,16 @@
 <template>
   <slot>
-    <AnimatePresence mode="popLayout">
+    <div>
       <motion.div
         class="root rounded-sm p-2 relative min-h-[200px]"
-        :initial="{ opacity: 0, scale: 0 }"
-        :animate="{ opacity: 1, scale: 1 }"
-        :exit="{ opacity: 0, scale: 0 }"
+        :initial="{ opacity: 0, y: 20 }"
+        :animate="{ opacity: 1, y: 0 }"
+        :exit="{ opacity: 0, scale: 0.8 }"
+        :transition="{
+          duration: 0.3,
+          delay:  0.1,
+          ease: 'easeOut',
+        }"
       >
         <button
           @click="deletePost(post.id)"
@@ -21,7 +26,7 @@
 
         <p class="first-letter:uppercase">{{ post.body }}</p>
       </motion.div>
-    </AnimatePresence>
+    </div>
   </slot>
 </template>
 
