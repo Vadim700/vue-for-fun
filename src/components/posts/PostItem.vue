@@ -1,17 +1,7 @@
 <template>
   <slot>
     <div>
-      <motion.div
-        class="root rounded-sm p-2 relative min-h-[200px]"
-        :initial="{ opacity: 0, y: 20 }"
-        :animate="{ opacity: 1, y: 0 }"
-        :exit="{ opacity: 0, scale: 0.8 }"
-        :transition="{
-          duration: 0.3,
-          delay:  0.1,
-          ease: 'easeOut',
-        }"
-      >
+      <div class="root rounded-sm p-2 relative min-h-[200px]">
         <button
           @click="deletePost(post.id)"
           class="absolute right-2 top-2 cursor-pointer hover:text-red-500 hover:rotate-90 transition-all ease-in-out duration-200"
@@ -25,7 +15,7 @@
         </h3>
 
         <p class="first-letter:uppercase">{{ post.body }}</p>
-      </motion.div>
+      </div>
     </div>
   </slot>
 </template>
@@ -33,7 +23,6 @@
 <script setup>
 import { X } from 'lucide-vue-next'
 import { usePostsStore } from '@/stores/postsStore'
-import { motion, AnimatePresence } from 'motion-v'
 const { deletePost } = usePostsStore()
 
 const props = defineProps({
