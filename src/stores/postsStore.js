@@ -4,7 +4,8 @@ import postsService from '../services/postsService.js'
 export const usePostsStore = defineStore('postsStore', {
   state: () => ({
     posts: [],
-    loading: false
+    loading: false,
+    isDeleting: false
   }),
   getters: {
     totalPostsLength() {
@@ -24,9 +25,13 @@ export const usePostsStore = defineStore('postsStore', {
       }
     },
 
-    deletePost(id) {
-      console.log('postStore.deletePost: ', id);
+    async deletePost(id) {
+      this.isDeleting = true;
       this.posts = this.posts.filter(post => post.id !== id);
+
+      setTimeout(() => {
+        this.isDeleting = false;
+      }, 100);
     },
 
     addPost(payload) {

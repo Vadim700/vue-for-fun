@@ -9,7 +9,7 @@
       :exit="{ opacity: 0, scale: 0.8 }"
       :transition="{
         duration: 0.2,
-        delay: index * 0.2,
+        delay: getDelay(index),
         ease: 'easeOut',
       }"
     >
@@ -21,7 +21,7 @@
       :exit="{ opacity: 0, scale: 0.8 }"
       :transition="{
         duration: 0.5,
-        delay: postsStore.posts.length * 0.2,
+        delay: getButtonDelay(),
         ease: 'easeOut',
       }"
       class="list__button rounded-sm p-2 min-h-[200px] grid place-content-center cursor-pointer group outline-0"
@@ -48,6 +48,12 @@ const postsList = postsStore.getPosts()
 const emit = defineEmits(['isOpen'])
 const onClickPlus = () => {
   emit('isOpen', true)
+}
+const getDelay = (index) => {
+  return postsStore.isDeleting ? 0 : index * 0.1
+}
+const getButtonDelay = () => {
+  return postsStore.isDeleting ? 0 : postsStore.posts.length * 0.1
 }
 </script>
 
