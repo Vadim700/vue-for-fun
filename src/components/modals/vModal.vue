@@ -63,7 +63,6 @@ const handleKeydown = (event) => {
 
 const closeModal = () => {
   emit('close')
-  // setTimeout(() => emit('close'), 1000)
 }
 
 onMounted(() => document.addEventListener('keydown', handleKeydown))
