@@ -4,7 +4,7 @@ import Header from '@/components/vHeader.vue'
 
 <template>
   <Header />
-  <main class="contaner px-16 py-8 overflow-y-auto max-h-[827px] custom-scrollbar">
+  <main class="px-16 py-8 overflow-y-auto custom-scrollbar w-full">
     <RouterView></RouterView>
   </main>
 </template>
@@ -16,8 +16,15 @@ body {
 }
 
 #app {
-  height: 100%;
   position: relative;
+  min-height: 100vh;
+
+  display: grid;
+  grid-template-rows: 92px auto;
+
+  background: linear-gradient(to right bottom, #108156, #108156);
+
+  font-family: 'Nunito', sans-serif;
 }
 
 .custom-scrollbar {

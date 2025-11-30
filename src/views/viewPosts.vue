@@ -1,9 +1,10 @@
 <template>
   <vContainer :width="1000">
-    <h1 class="text-4xl mb-8 flex gap-8 items-center">
-      Posts ({{ postsStore.totalPostsLength }})
+    <h1 class="text-4xl mb-2 flex gap-8 items-center justify-center text-white uppercase font-bold">
+      Instagram post template
       <Loader v-if="postsStore.loading" class="animate-spin" />
     </h1>
+    <span class="text-2xl w-full flex justify-center text-white mb-8">Plant Shop</span>
     <PostsList @isOpen="onClickPlus" />
   </vContainer>
   <Modal :open="openModal" @close="onCloseModal">

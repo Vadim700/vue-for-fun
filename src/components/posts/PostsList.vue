@@ -1,72 +1,48 @@
 <template>
-  <div class="list">
-    <motion.div
-      layout="position"
-      v-for="(post, index) in postsStore.posts"
-      :key="post.id"
-      :initial="{ opacity: 0, y: 20 }"
-      :animate="{ opacity: 1, y: 0 }"
-      :exit="{ opacity: 0, scale: 0.8 }"
-      :transition="{
-        duration: 0.2,
-        delay: getDelay(index),
-        ease: 'easeOut',
-      }"
+  <div
+    class="auto-cols-max grid gap-4 grid-cols-6 grid-rows-2"
+    :class="{ 'grid-flow-row': flowRows, 'grid-flow-col': !flowRows }"
+  >
+    <div
+      v-for="item of items"
+      @click="setActive(item.id)"
+      :key="item.id"
+      class="grid place-content-center text-white aspect-square bg-[#213b28] shadow-[#213b28] shadow-md rounded-md cursor-pointer"
+      :class="{ 'col-span-2 row-span-2': item.active }"
     >
-      <PostItem :post="post" />
-    </motion.div>
-    <motion.button
-      :initial="{ opacity: 0, y: 20 }"
-      :animate="{ opacity: 1, y: 0 }"
-      :exit="{ opacity: 0, scale: 0.8 }"
-      :transition="{
-        duration: 0.5,
-        delay: getButtonDelay(),
-        ease: 'easeOut',
-      }"
-      class="list__button rounded-sm p-2 min-h-[200px] grid place-content-center cursor-pointer group outline-0"
-      @click="onClickPlus"
-    >
-      <Plus
-        size="120"
-        stroke-width="1"
-        class="group-hover:text-red-500 group-hover:scale-[1.3] transition-all duration-200 ease-in-out"
-      />
-    </motion.button>
+      {{ item.id }}
+    </div>
   </div>
 </template>
 
 <script setup>
-import { Plus } from 'lucide-vue-next'
-import PostItem from './PostItem.vue'
-import { usePostsStore } from '@/stores/postsStore'
-import { motion, AnimatePresence } from 'motion-v'
+import { ref, computed } from 'vue'
 
-const postsStore = usePostsStore()
-const postsList = postsStore.getPosts()
+const items = ref([
+  { id: 1, active: true },
+  { id: 2, active: false },
+  { id: 3, active: false },
+  { id: 4, active: false },
+  { id: 5, active: false },
+  { id: 6, active: false },
+  { id: 7, active: false },
+  { id: 8, active: false },
+  { id: 9, active: false },
+])
 
-const emit = defineEmits(['isOpen'])
-const onClickPlus = () => {
-  emit('isOpen', true)
+const setActive = (id) => {
+  items.value.forEach((item) => (item.active = false))
+  const foundedItem = items.value.find((i) => i.id === id)
+  foundedItem.active = true
 }
-const getDelay = (index) => {
-  return postsStore.isDeleting ? 0 : index * 0.1
-}
-const getButtonDelay = () => {
-  return postsStore.isDeleting ? 0 : postsStore.posts.length * 0.1
-}
+
+const flowRows = computed(
+  () => items.value[1].active || items.value[3].active || items.value[7].active,
+)
 </script>
 
 <style scoped lang="scss">
-.list {
-  display: grid;
-  gap: 15px;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-
-  &__button {
-    -webkit-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
-    -moz-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
-    box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
-  }
+.wow {
+  grid-auto-flow: column;
 }
 </style>

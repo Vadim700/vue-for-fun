@@ -49,12 +49,12 @@ export default {
         title: "eum et est occaecati",
         body: "ullam et saepe reiciendis voluptatem adipisci sit amet autem assumenda provident rerum culpa quis hic commodi nesciunt rem tenetur doloremque ipsam iure quis sunt voluptatem rerum illo velit"
       },
-      // {
-      //   userId: 1,
-      //   id: 9,
-      //   title: "nesciunt quas odio",
-      //   body: "repudiandae veniam quaerat sunt sed alias aut fugiat sit autem sed est voluptatem omnis possimus esse voluptatibus quis est aut tenetur dolor neque"
-      // }
+      {
+        userId: 1,
+        id: 9,
+        title: "nesciunt quas odio",
+        body: "repudiandae veniam quaerat sunt sed alias aut fugiat sit autem sed est voluptatem omnis possimus esse voluptatibus quis est aut tenetur dolor neque"
+      }
     ]
 
 
