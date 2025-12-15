@@ -45,8 +45,15 @@ const updateElementWidth = () => {
   }
 }
 
+// Вычисляем позиции всех элементов
 const positionedItems = computed(() => {
   if (elWidth.value === 0) return items.value
+
+  // debugger;
+
+  const activeItem = items.value.find((item) => item.active)
+  const activeIndex = items.value.findIndex((item) => item.active)
+  const isActiveSecondRow = activeItem && activeIndex >= itemsPerRow - 1 // если активен элемент из второго ряда
 
   const result = []
   let currentRow = 0
@@ -58,18 +65,22 @@ const positionedItems = computed(() => {
     const isActive = item.active
 
     // Ширина и высота элемента
-    const elementWidth = isActive ? elWidth.value * 2 : elWidth.value
-    const elementHeight = isActive ? elWidth.value * 2 : elWidth.value
+    const elementWidth = isActive ? elWidth.value.toFixed(1) * 2 : elWidth.value.toFixed(1)
+    const elementHeight = isActive ? elWidth.value.toFixed(1) * 2 : elWidth.value.toFixed(1)
 
+    // Проверяем, помещается ли элемент в текущий ряд
     if (currentCol + (isActive ? 2 : 1) > itemsPerRow) {
+      // Если не помещается - переносим на следующую строку
       currentRow++
       currentCol = 0
     }
 
+    // Проверяем, если активный элемент уже обработан на предыдущем шаге и текущий элемент должен его обтекать
     if (activeElementProcessed && currentCol === activeElementInfo.col) {
       currentCol += 2
     }
 
+    // Если это активный элемент, запоминаем его позицию
     if (isActive) {
       activeElementProcessed = true
       activeElementInfo = {
@@ -79,9 +90,11 @@ const positionedItems = computed(() => {
       }
     }
 
-    const left = currentCol * elWidth.value
-    const top = currentRow * elWidth.value
+    // Вычисляем позиции
+    let left = (currentCol * elWidth.value).toFixed(1)
+    let top = (currentRow * elWidth.value).toFixed(1)
 
+    // Обновляем стили для элемента
     item.left = `${left}px`
     item.top = `${top}px`
     item.width = `${elementWidth - 6}px`
@@ -89,6 +102,7 @@ const positionedItems = computed(() => {
 
     result.push(item)
 
+    // Обновляем текущую колонку для следующего элемента
     if (isActive) {
       currentCol += 2 // Активный элемент занимает 2 колонки
     } else {
@@ -100,11 +114,18 @@ const positionedItems = computed(() => {
       currentRow++
       currentCol = 0
     }
+
+    // console.log(`item ${item.id}: col: ${currentCol}; row: ${currentRow}`)
+
+  }
+  if(isActiveSecondRow){
+    console.log(result)
   }
 
   return result
 })
 
+// Вспомогательная переменная для отслеживания активного элемента
 let activeElementInfo = {
   row: -1,
   col: -1,
@@ -119,6 +140,8 @@ const handleClick = (id) => {
     ...item,
     active: item.id === id,
   }))
+
+  // console.log(positionedItems.value)
 }
 
 onMounted(() => {
