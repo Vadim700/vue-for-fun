@@ -49,48 +49,75 @@ const updateElementWidth = () => {
 const positionedItems = computed(() => {
   if (elWidth.value === 0) return items.value
 
-  // debugger;
-
   const activeItem = items.value.find((item) => item.active)
   const activeIndex = items.value.findIndex((item) => item.active)
-  const isActiveSecondRow = activeItem && activeIndex >= itemsPerRow - 1 // если активен элемент из второго ряда
+  const isActiveInFirstRow = activeIndex < itemsPerRow
+  const isActiveInSecondRow = activeItem && activeIndex >= itemsPerRow - 1
+
+  let itemsToProcess = [...items.value]
+
+  if (isActiveInSecondRow) {
+    const [activeItem] = itemsToProcess.splice(activeIndex, 1)
+
+    const insertPosition = Math.min(activeIndex % itemsPerRow, itemsPerRow - 2)
+
+    itemsToProcess.splice(insertPosition, 0, activeItem)
+  }
 
   const result = []
   let currentRow = 0
   let currentCol = 0
   let activeElementProcessed = false
+  let activeElementInfo = { row: -1, col: -1, width: 0 }
 
-  for (let i = 0; i < items.value.length; i++) {
-    const item = { ...items.value[i] }
+  for (let i = 0; i < itemsToProcess.length; i++) {
+    const item = { ...itemsToProcess[i] }
     const isActive = item.active
+    const originalIndex = items.value.findIndex((it) => it.id === item.id)
 
     // Ширина и высота элемента
     const elementWidth = isActive ? elWidth.value.toFixed(1) * 2 : elWidth.value.toFixed(1)
     const elementHeight = isActive ? elWidth.value.toFixed(1) * 2 : elWidth.value.toFixed(1)
 
-    // Проверяем, помещается ли элемент в текущий ряд
     if (currentCol + (isActive ? 2 : 1) > itemsPerRow) {
-      // Если не помещается - переносим на следующую строку
       currentRow++
       currentCol = 0
+
+      if (isActive && currentRow === 0) {
+        for (let shift = 1; shift <= currentCol; shift++) {
+          if (currentCol - shift >= 0) {
+            currentCol -= shift
+            break
+          }
+        }
+      }
     }
 
-    // Проверяем, если активный элемент уже обработан на предыдущем шаге и текущий элемент должен его обтекать
     if (activeElementProcessed && currentCol === activeElementInfo.col) {
       currentCol += 2
+
+      if (currentCol >= itemsPerRow) {
+        currentRow++
+        currentCol = 0
+      }
     }
 
-    // Если это активный элемент, запоминаем его позицию
     if (isActive) {
       activeElementProcessed = true
       activeElementInfo = {
         row: currentRow,
         col: currentCol,
-        width: 2, // Занимает 2 колонки
+        width: 2,
+      }
+
+      if (isActiveInSecondRow) {
+        currentRow = 0
+        if (currentCol > itemsPerRow - 2) {
+          currentCol = itemsPerRow - 2 // Ставим в последние две колонки
+        }
       }
     }
 
-    // Вычисляем позиции
     let left = (currentCol * elWidth.value).toFixed(1)
     let top = (currentRow * elWidth.value).toFixed(1)
 
@@ -102,7 +129,6 @@ const positionedItems = computed(() => {
 
     result.push(item)
 
-    // Обновляем текущую колонку для следующего элемента
     if (isActive) {
       currentCol += 2 // Активный элемент занимает 2 колонки
     } else {
@@ -114,34 +140,21 @@ const positionedItems = computed(() => {
       currentRow++
       currentCol = 0
     }
-
-    // console.log(`item ${item.id}: col: ${currentCol}; row: ${currentRow}`)
-
-  }
-  if(isActiveSecondRow){
-    console.log(result)
   }
 
-  return result
+  // Сортируем результат по оригинальному порядку ID для правильного отображения
+  return result.sort((a, b) => {
+    const indexA = items.value.findIndex((item) => item.id === a.id)
+    const indexB = items.value.findIndex((item) => item.id === b.id)
+    return indexA - indexB
+  })
 })
 
-// Вспомогательная переменная для отслеживания активного элемента
-let activeElementInfo = {
-  row: -1,
-  col: -1,
-  width: 0,
-}
-
 const handleClick = (id) => {
-  // Сбрасываем позиции активного элемента
-  activeElementInfo = { row: -1, col: -1, width: 0 }
-
   items.value = items.value.map((item) => ({
     ...item,
     active: item.id === id,
   }))
-
-  // console.log(positionedItems.value)
 }
 
 onMounted(() => {
