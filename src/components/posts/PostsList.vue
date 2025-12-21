@@ -98,14 +98,14 @@ const positionedItems = computed(() => {
       break
 
     case 6:
-      if(previousActiveId.value !== null && previousActiveId.value <5){
+      if(previousActiveId.value !== null && previousActiveId.value < 5){
         grid = [
-                  [2, 0], [3, 0], [4, 0], [5, 0], [2, 1],
-           [0, 0], [3, 1], [4, 1], [5, 1],
+                 [2, 0], [3, 0], [4, 0], [5, 0],
+          [2, 1],[0, 0], [3, 1], [4, 1], [5, 1],
         ]
       } else {
         grid = [
-                  [0, 0], [3, 0], [4, 0], [5, 0],
+          [0, 0],         [3, 0], [4, 0], [5, 0],
           [0, 1], [1, 0], [3, 1], [4, 1], [5, 1],
         ]
       }
