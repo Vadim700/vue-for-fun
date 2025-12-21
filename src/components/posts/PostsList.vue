@@ -37,6 +37,7 @@ const items = ref([
 const elWidth = ref(0)
 const listRef = ref(null)
 const itemsPerRow = 6
+const previousActiveId = ref(null)
 
 const updateElementWidth = () => {
   if (listRef.value) {
@@ -45,81 +46,106 @@ const updateElementWidth = () => {
   }
 }
 
-// Вычисляем позиции всех элементов
 const positionedItems = computed(() => {
   if (elWidth.value === 0) return items.value
 
   const activeItem = items.value.find((item) => item.active)
-  const activeIndex = items.value.findIndex((item) => item.active)
-  const isActiveInFirstRow = activeIndex < itemsPerRow
-  const isActiveInSecondRow = activeItem && activeIndex >= itemsPerRow - 1
+  const result = []
+  let grid = []
 
-  let itemsToProcess = [...items.value]
+  // [x, y]
+  switch (activeItem.id) {
+    case 1:
+      grid = [
+        [0, 0], [2, 0], [3, 0], [4, 0], [5, 0],
+                [2, 1], [3, 1], [4, 1], [5, 1],
+      ]
+      break
 
-  if (isActiveInSecondRow) {
-    const [activeItem] = itemsToProcess.splice(activeIndex, 1)
+    case 2:
+      grid = [
+        [0, 0], [1, 0], [3, 0], [4, 0], [5, 0],
+        [0, 1],         [3, 1], [4, 1], [5, 1],
+      ]
+      break
 
-    const insertPosition = Math.min(activeIndex % itemsPerRow, itemsPerRow - 2)
+    case 3:
+      grid = [
+        [0, 0], [1, 0], [2, 0], [4, 0], [5, 0],
+        [0, 1], [1, 1],         [4, 1], [5, 1],
+      ]
+      break
 
-    itemsToProcess.splice(insertPosition, 0, activeItem)
+    case 4:
+      grid = [
+        [0, 0], [1, 0], [2, 0], [3, 0], [5, 0],
+        [0, 1], [1, 1], [2, 1],         [5, 1],
+      ]
+      break
+
+    case 5:
+      if (previousActiveId.value !== null && previousActiveId.value <= 5) {
+        grid = [
+          [0, 0], [1, 0], [2, 0], [3, 0], [4, 0],
+          [0, 1], [1, 1], [2, 1], [3, 1],
+        ]
+      } else {
+        grid = [
+                  [2, 0], [3, 0], [4, 0], [5, 0],
+          [0, 0], [2, 1], [3, 1], [4, 1], [5, 1],
+        ]
+      }
+      break
+
+    case 6:
+      grid = [
+                [0, 0], [3, 0], [4, 0], [5, 0],
+        [0, 1], [1, 0], [3, 1], [4, 1], [5, 1],
+      ]
+      break
+
+    case 7:
+      grid = [
+        [0, 0],         [1, 0], [4, 0], [5, 0],
+        [0, 1], [1, 1], [2, 0], [4, 1], [5, 1],
+      ]
+      break
+
+    case 8:
+      grid = [
+        [0, 0], [1, 0],         [2, 0], [5, 0],
+        [0, 1], [1, 1], [2, 1], [3, 0], [5, 1],
+      ]
+      break
+
+    case 9:
+      grid = [
+        [0, 0], [1, 0], [2, 0], [3, 0],
+        [0, 1], [1, 1], [2, 1], [3, 1], [4, 0],
+      ]
+      break
+
+    default:
+      grid = [
+        [0, 0], [2, 0], [3, 0], [4, 0], [5, 0],
+                [2, 1], [3, 1], [4, 1], [5, 1],
+      ]
   }
 
-  const result = []
-  let currentRow = 0
-  let currentCol = 0
-  let activeElementProcessed = false
-  let activeElementInfo = { row: -1, col: -1, width: 0 }
+  // console.log('active item: ', activeItem.id, ' ', grid)
 
-  for (let i = 0; i < itemsToProcess.length; i++) {
-    const item = { ...itemsToProcess[i] }
+  for (let i = 0; i < items.value.length; i++) {
+    const item = { ...items.value[i] }
     const isActive = item.active
-    const originalIndex = items.value.findIndex((it) => it.id === item.id)
 
     // Ширина и высота элемента
     const elementWidth = isActive ? elWidth.value.toFixed(1) * 2 : elWidth.value.toFixed(1)
     const elementHeight = isActive ? elWidth.value.toFixed(1) * 2 : elWidth.value.toFixed(1)
 
-    if (currentCol + (isActive ? 2 : 1) > itemsPerRow) {
-      currentRow++
-      currentCol = 0
+    let left = (grid[i][0] * elWidth.value).toFixed(1)
+    let top = (grid[i][1] * elWidth.value).toFixed(1)
 
-      if (isActive && currentRow === 0) {
-        for (let shift = 1; shift <= currentCol; shift++) {
-          if (currentCol - shift >= 0) {
-            currentCol -= shift
-            break
-          }
-        }
-      }
-    }
-
-    if (activeElementProcessed && currentCol === activeElementInfo.col) {
-      currentCol += 2
-
-      if (currentCol >= itemsPerRow) {
-        currentRow++
-        currentCol = 0
-      }
-    }
-
-    if (isActive) {
-      activeElementProcessed = true
-      activeElementInfo = {
-        row: currentRow,
-        col: currentCol,
-        width: 2,
-      }
-
-      if (isActiveInSecondRow) {
-        currentRow = 0
-        if (currentCol > itemsPerRow - 2) {
-          currentCol = itemsPerRow - 2 // Ставим в последние две колонки
-        }
-      }
-    }
-
-    let left = (currentCol * elWidth.value).toFixed(1)
-    let top = (currentRow * elWidth.value).toFixed(1)
+    console.log(`item: ${item.id}; left: ${left}; top: ${top}`)
 
     // Обновляем стили для элемента
     item.left = `${left}px`
@@ -128,29 +154,19 @@ const positionedItems = computed(() => {
     item.height = `${elementHeight - 6}px`
 
     result.push(item)
-
-    if (isActive) {
-      currentCol += 2 // Активный элемент занимает 2 колонки
-    } else {
-      currentCol += 1
-    }
-
-    // Если вышли за пределы ряда
-    if (currentCol >= itemsPerRow) {
-      currentRow++
-      currentCol = 0
-    }
   }
 
-  // Сортируем результат по оригинальному порядку ID для правильного отображения
-  return result.sort((a, b) => {
-    const indexA = items.value.findIndex((item) => item.id === a.id)
-    const indexB = items.value.findIndex((item) => item.id === b.id)
-    return indexA - indexB
-  })
+  return result
 })
 
 const handleClick = (id) => {
+  // Сохраняем текущий активный элемент как предыдущий
+  const currentActive = items.value.find(item => item.active)
+  if (currentActive) {
+    previousActiveId.value = currentActive.id
+  }
+
+  // Обновляем активный элемент
   items.value = items.value.map((item) => ({
     ...item,
     active: item.id === id,
@@ -160,6 +176,11 @@ const handleClick = (id) => {
 onMounted(() => {
   updateElementWidth()
   window.addEventListener('resize', updateElementWidth)
+
+  const initialActive = items.value.find(item => item.active)
+  if (initialActive) {
+    previousActiveId.value = initialActive.id
+  }
 })
 
 onBeforeUnmount(() => {
@@ -171,7 +192,7 @@ onBeforeUnmount(() => {
 .list {
   position: relative;
   width: 100%;
-  height: calc(var(--el-width, 150px) * 3); // Высота для 3 рядов
+  height: 650px; // Высота для 3 рядов
   margin: 0 auto;
   border-radius: 12px;
   overflow: hidden;
@@ -201,6 +222,7 @@ onBeforeUnmount(() => {
       color: #333;
 
       &:hover {
+        background-color: #f0f0f0;
       }
     }
   }
