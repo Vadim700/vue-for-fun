@@ -173,7 +173,6 @@ onBeforeUnmount(() => {
   width: 100%;
   height: calc(var(--el-width, 150px) * 3); // Высота для 3 рядов
   margin: 0 auto;
-  background-color: #f0f0f0;
   border-radius: 12px;
   overflow: hidden;
   box-sizing: border-box;
@@ -195,17 +194,13 @@ onBeforeUnmount(() => {
       color: white;
       z-index: 10;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      border-color: #388e3c;
     }
 
     &:not(.list__item_active) {
       background-color: #ffffff;
       color: #333;
-      border-color: #ddd;
 
       &:hover {
-        background-color: #e8f5e9;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
       }
     }
   }
