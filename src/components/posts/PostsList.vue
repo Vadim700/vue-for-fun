@@ -14,7 +14,7 @@
         height: item.height,
       }"
     >
-      {{ item.id }}
+      <img :src="getImageSrc(item.id)" :alt="'Post ' + item.id"/>
     </div>
   </div>
 </template>
@@ -45,6 +45,8 @@ const updateElementWidth = () => {
     elWidth.value = width / itemsPerRow
   }
 }
+
+const getImageSrc = (id) => new URL(`../../assets/Post ${id}.png`, import.meta.url).href;
 
 const positionedItems = computed(() => {
   if (elWidth.value === 0) return items.value
@@ -98,10 +100,18 @@ const positionedItems = computed(() => {
       break
 
     case 6:
-      grid = [
-                [0, 0], [3, 0], [4, 0], [5, 0],
-        [0, 1], [1, 0], [3, 1], [4, 1], [5, 1],
-      ]
+      if(previousActiveId.value !== null && previousActiveId.value < 5){
+        grid = [
+                 [2, 0], [3, 0], [4, 0], [5, 0],
+          [2, 1],[0, 0], [3, 1], [4, 1], [5, 1],
+        ]
+      } else {
+        grid = [
+          [0, 0],         [3, 0], [4, 0], [5, 0],
+          [0, 1], [1, 0], [3, 1], [4, 1], [5, 1],
+        ]
+      }
+
       break
 
     case 7:
@@ -145,13 +155,10 @@ const positionedItems = computed(() => {
     let left = (grid[i][0] * elWidth.value).toFixed(1)
     let top = (grid[i][1] * elWidth.value).toFixed(1)
 
-    console.log(`item: ${item.id}; left: ${left}; top: ${top}`)
-
-    // Обновляем стили для элемента
     item.left = `${left}px`
     item.top = `${top}px`
-    item.width = `${elementWidth - 6}px`
-    item.height = `${elementHeight - 6}px`
+    item.width = `${elementWidth - 8}px`
+    item.height = `${elementHeight - 8}px`
 
     result.push(item)
   }
@@ -211,20 +218,21 @@ onBeforeUnmount(() => {
     border: 3px solid transparent;
 
     &_active {
-      background-color: #4caf50;
       color: white;
       z-index: 10;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
     &:not(.list__item_active) {
-      background-color: #ffffff;
-      color: #333;
 
       &:hover {
-        background-color: #f0f0f0;
       }
     }
   }
 }
+
+
 </style>
+
+
+
+
