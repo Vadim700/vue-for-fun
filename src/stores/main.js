@@ -7,11 +7,15 @@ export const usePostsStore = defineStore('postsStore', {
     loading: false,
     isDeleting: false
   }),
+
+
   getters: {
     totalPostsLength() {
       return this.posts.length
     },
   },
+
+
   actions: {
     async getPosts() {
       this.loading = true;
@@ -33,7 +37,6 @@ export const usePostsStore = defineStore('postsStore', {
         this.isDeleting = false;
       }, 100);
     },
-
 
     addPost(payload) {
       const maxId = this.posts.reduce((max, post) => Math.max(max, post.id), 0);

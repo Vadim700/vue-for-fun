@@ -14,7 +14,7 @@
         height: item.height,
       }"
     >
-      <img :src="getImageSrc(item.id)" :alt="'Post ' + item.id"/>
+      <img :src="getImageSrc(item.id)" :alt="'Post ' + item.id" />
     </div>
   </div>
 </template>
@@ -46,7 +46,7 @@ const updateElementWidth = () => {
   }
 }
 
-const getImageSrc = (id) => new URL(`../../assets/Post ${id}.png`, import.meta.url).href;
+const getImageSrc = (id) => new URL(`../../assets/Post ${id}.png`, import.meta.url).href
 
 const positionedItems = computed(() => {
   if (elWidth.value === 0) return items.value
@@ -59,56 +59,112 @@ const positionedItems = computed(() => {
   switch (activeItem.id) {
     case 1:
       grid = [
-        [0, 0], [2, 0], [3, 0], [4, 0], [5, 0],
-                [2, 1], [3, 1], [4, 1], [5, 1],
+        [0, 0],
+        [2, 0],
+        [3, 0],
+        [4, 0],
+        [5, 0],
+        [2, 1],
+        [3, 1],
+        [4, 1],
+        [5, 1],
       ]
       break
 
     case 2:
       grid = [
-        [0, 0], [1, 0], [3, 0], [4, 0], [5, 0],
-        [0, 1],         [3, 1], [4, 1], [5, 1],
+        [0, 0],
+        [1, 0],
+        [3, 0],
+        [4, 0],
+        [5, 0],
+        [0, 1],
+        [3, 1],
+        [4, 1],
+        [5, 1],
       ]
       break
 
     case 3:
       grid = [
-        [0, 0], [1, 0], [2, 0], [4, 0], [5, 0],
-        [0, 1], [1, 1],         [4, 1], [5, 1],
+        [0, 0],
+        [1, 0],
+        [2, 0],
+        [4, 0],
+        [5, 0],
+        [0, 1],
+        [1, 1],
+        [4, 1],
+        [5, 1],
       ]
       break
 
     case 4:
       grid = [
-        [0, 0], [1, 0], [2, 0], [3, 0], [5, 0],
-        [0, 1], [1, 1], [2, 1],         [5, 1],
+        [0, 0],
+        [1, 0],
+        [2, 0],
+        [3, 0],
+        [5, 0],
+        [0, 1],
+        [1, 1],
+        [2, 1],
+        [5, 1],
       ]
       break
 
     case 5:
       if (previousActiveId.value !== null && previousActiveId.value <= 5) {
         grid = [
-          [0, 0], [1, 0], [2, 0], [3, 0], [4, 0],
-          [0, 1], [1, 1], [2, 1], [3, 1],
+          [0, 0],
+          [1, 0],
+          [2, 0],
+          [3, 0],
+          [4, 0],
+          [0, 1],
+          [1, 1],
+          [2, 1],
+          [3, 1],
         ]
       } else {
         grid = [
-                  [2, 0], [3, 0], [4, 0], [5, 0],
-          [0, 0], [2, 1], [3, 1], [4, 1], [5, 1],
+          [2, 0],
+          [3, 0],
+          [4, 0],
+          [5, 0],
+          [0, 0],
+          [2, 1],
+          [3, 1],
+          [4, 1],
+          [5, 1],
         ]
       }
       break
 
     case 6:
-      if(previousActiveId.value !== null && previousActiveId.value < 5){
+      if (previousActiveId.value !== null && previousActiveId.value < 5) {
         grid = [
-                 [2, 0], [3, 0], [4, 0], [5, 0],
-          [2, 1],[0, 0], [3, 1], [4, 1], [5, 1],
+          [2, 0],
+          [3, 0],
+          [4, 0],
+          [5, 0],
+          [2, 1],
+          [0, 0],
+          [3, 1],
+          [4, 1],
+          [5, 1],
         ]
       } else {
         grid = [
-          [0, 0],         [3, 0], [4, 0], [5, 0],
-          [0, 1], [1, 0], [3, 1], [4, 1], [5, 1],
+          [0, 0],
+          [3, 0],
+          [4, 0],
+          [5, 0],
+          [0, 1],
+          [1, 0],
+          [3, 1],
+          [4, 1],
+          [5, 1],
         ]
       }
 
@@ -116,33 +172,59 @@ const positionedItems = computed(() => {
 
     case 7:
       grid = [
-        [0, 0],         [1, 0], [4, 0], [5, 0],
-        [0, 1], [1, 1], [2, 0], [4, 1], [5, 1],
+        [0, 0],
+        [1, 0],
+        [4, 0],
+        [5, 0],
+        [0, 1],
+        [1, 1],
+        [2, 0],
+        [4, 1],
+        [5, 1],
       ]
       break
 
     case 8:
       grid = [
-        [0, 0], [1, 0],         [2, 0], [5, 0],
-        [0, 1], [1, 1], [2, 1], [3, 0], [5, 1],
+        [0, 0],
+        [1, 0],
+        [2, 0],
+        [5, 0],
+        [0, 1],
+        [1, 1],
+        [2, 1],
+        [3, 0],
+        [5, 1],
       ]
       break
 
     case 9:
       grid = [
-        [0, 0], [1, 0], [2, 0], [3, 0],
-        [0, 1], [1, 1], [2, 1], [3, 1], [4, 0],
+        [0, 0],
+        [1, 0],
+        [2, 0],
+        [3, 0],
+        [0, 1],
+        [1, 1],
+        [2, 1],
+        [3, 1],
+        [4, 0],
       ]
       break
 
     default:
       grid = [
-        [0, 0], [2, 0], [3, 0], [4, 0], [5, 0],
-                [2, 1], [3, 1], [4, 1], [5, 1],
+        [0, 0],
+        [2, 0],
+        [3, 0],
+        [4, 0],
+        [5, 0],
+        [2, 1],
+        [3, 1],
+        [4, 1],
+        [5, 1],
       ]
   }
-
-  // console.log('active item: ', activeItem.id, ' ', grid)
 
   for (let i = 0; i < items.value.length; i++) {
     const item = { ...items.value[i] }
@@ -168,7 +250,7 @@ const positionedItems = computed(() => {
 
 const handleClick = (id) => {
   // Сохраняем текущий активный элемент как предыдущий
-  const currentActive = items.value.find(item => item.active)
+  const currentActive = items.value.find((item) => item.active)
   if (currentActive) {
     previousActiveId.value = currentActive.id
   }
@@ -184,7 +266,7 @@ onMounted(() => {
   updateElementWidth()
   window.addEventListener('resize', updateElementWidth)
 
-  const initialActive = items.value.find(item => item.active)
+  const initialActive = items.value.find((item) => item.active)
   if (initialActive) {
     previousActiveId.value = initialActive.id
   }
@@ -221,18 +303,6 @@ onBeforeUnmount(() => {
       color: white;
       z-index: 10;
     }
-
-    &:not(.list__item_active) {
-
-      &:hover {
-      }
-    }
   }
 }
-
-
 </style>
-
-
-
-
