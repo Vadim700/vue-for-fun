@@ -42,7 +42,7 @@
 </template>
 
 <script setup>
-import { usePostsStore } from '@/stores/postsStore'
+import { usePostsStore } from '@/stores/_todos'
 import { useField, useForm } from 'vee-validate'
 import * as yup from 'yup'
 
