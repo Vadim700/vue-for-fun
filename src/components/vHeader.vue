@@ -1,5 +1,5 @@
 <template>
-  <header class="header flex justify-between items-center py-4 px-16 bg-amber-900 text-white">
+  <header class="header flex justify-between items-center py-4 px-16 bg-[#bb1017] text-white">
     <RouterLink to="/">
       <div class="header__logo text-2xl"></div>
     </RouterLink>
@@ -32,7 +32,9 @@
 <script setup>
 import { ref, onMounted, watch, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
+import { useMainStore } from '@/stores/main'
 
+const state = useMainStore()
 const route = useRoute()
 const boundingClientRect = ref({ width: 0, left: 0, top: 0 })
 const showUnderline = ref(false)
@@ -83,6 +85,8 @@ const updateUnderlinePosition = () => {
 }
 
 const onClickMenuItem = (e) => {
+  state.setTopic(e.target.textContent)
+
   nextTick(() => {
     updateUnderlinePosition()
   })
