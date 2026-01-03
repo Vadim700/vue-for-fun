@@ -1,47 +1,19 @@
 import { defineStore } from 'pinia';
-import postsService from '../services/postsService.js'
 
-export const usePostsStore = defineStore('postsStore', {
+export const useMainStore = defineStore('mainStore', {
   state: () => ({
-    posts: [],
-    loading: false,
-    isDeleting: false
+    topic: ''
   }),
 
 
   getters: {
-    totalPostsLength() {
-      return this.posts.length
-    },
+    getTopic: (state) => state.topic
   },
 
 
   actions: {
-    async getPosts() {
-      this.loading = true;
-      try {
-        this.posts = await postsService.fetchPosts();
-      } catch (e) {
-        console.error(e);
-        this.loading = false;
-      } finally {
-        this.loading = false;
-      }
-    },
-
-    async deletePost(id) {
-      this.isDeleting = true;
-      this.posts = this.posts.filter(post => post.id !== id);
-
-      setTimeout(() => {
-        this.isDeleting = false;
-      }, 100);
-    },
-
-    addPost(payload) {
-      const maxId = this.posts.reduce((max, post) => Math.max(max, post.id), 0);
-      const newPost = { ...payload, id: maxId + 1 };
-      this.posts.push(newPost);
+    setTopic(payload) {
+      this.topic = payload.toLowerCase();
     }
   },
 })

@@ -1,5 +1,5 @@
 <template>
-  <h1>Todos</h1>
+  <h1 class="text-4xl text-white font-bold uppercase text-center mb-8">Todos</h1>
 
   <TodoList />
 </template>
