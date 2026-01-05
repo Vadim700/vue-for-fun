@@ -8,13 +8,23 @@ export const useTodoStore = defineStore('todoStore', {
 
 
   getters: {
-    getTodoList: (state) => state.todos
+    getTodoList: () => this.todos,
+    getCompleted: () => this.todos.filter(todo => todo.comleted),
+    getActiveTodos: () => this.todos.filter(todo => !todo.comleted),
+    getTodoById: (id) => this.todos.filter(todo => todo.id === id)
   },
 
 
   actions: {
     async fetchData() {
       this.todos = postsService.fetchTodos()
+    },
+
+    toggleTodo(id) {
+      const founded = this.todos.find(todo => todo.id === id);
+      if (founded) {
+        founded.completed = !founded.completed
+      }
     }
   }
 })
