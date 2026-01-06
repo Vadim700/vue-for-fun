@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-3 gap-4">
+  <div class="grid grid-cols-3 gap-4" ref="constraintsRef">
     <div class="">
       <h2 class="text-white text-2xl text-center mb-2">To do</h2>
       <ul>
@@ -11,9 +11,9 @@
     <div class="">
       <h2 class="text-white text-2xl text-center mb-2">All</h2>
       <ul>
-        <li v-for="todo of todos" :key="todo">
+        <motion.li drag :dragConstraints="constraintsRef" v-for="todo of todos" :key="todo">
           <TodoItem :todo="todo" />
-        </li>
+        </motion.li>
       </ul>
     </div>
     <div class="">
@@ -29,11 +29,15 @@
 
 <script setup>
 import { computed, onMounted, ref } from 'vue'
+import { motion, useScroll } from 'motion-v'
 import TodoItem from './TodoItem.vue'
 import { useTodoStore } from '@/stores/todos'
-const store = useTodoStore()
+import { useDomRef } from 'motion-v'
 
+const store = useTodoStore()
 onMounted(() => store.fetchData())
+
+const constraintsRef = useDomRef() // не позволяет вылетать элементам при D&D за пределеы этого ref
 
 const todos = computed(() => store.todos)
 

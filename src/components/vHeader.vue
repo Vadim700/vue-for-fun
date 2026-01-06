@@ -79,6 +79,8 @@ const updateUnderlinePosition = () => {
       top: top + height + 4 - navRect.top,
     }
     showUnderline.value = true
+
+    state.setTopic(activeLink.textContent)
   } else {
     showUnderline.value = false
   }
@@ -104,6 +106,15 @@ watch(
 onMounted(() => {
   nextTick(() => {
     updateUnderlinePosition()
+
+    if (state.topic) {
+      const link = Array.from(menuList.value?.querySelectorAll('.menu__link') || []).find(
+        (item) => item.textContent === state.topic,
+      )
+      if (link) {
+        link.classList.add('active-link')
+      }
+    }
   })
 
   window.addEventListener('resize', updateUnderlinePosition)

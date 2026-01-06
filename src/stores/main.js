@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 
 export const useMainStore = defineStore('mainStore', {
   state: () => ({
-    topic: ''
+    topic: localStorage.getItem('topic') || ''
   }),
 
 
@@ -14,6 +14,7 @@ export const useMainStore = defineStore('mainStore', {
   actions: {
     setTopic(payload) {
       this.topic = payload.toLowerCase();
+      localStorage.setItem('topic', payload.toLowerCase())
     }
   },
 })
