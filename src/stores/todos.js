@@ -26,5 +26,7 @@ export const useTodoStore = defineStore('todoStore', {
         founded.completed = !founded.completed
       }
     }
-  }
+  },
+
+  repsist: true
 })
