@@ -1,8 +1,10 @@
 <template>
   <div class="relative mb-2 p-2 pb-8 bg-amber-300 rounded-sm">
     <div class="first-letter:uppercase">{{ todo.title }}</div>
-
-    <div v-if="completedCol"  class="absolute right-0 rotate-90 bottom-0 top-[50%] w-6 h-6 cursor-grab -translate-y-[50%]">
+    <div
+      v-if="completedCol"
+      class="absolute right-0 rotate-90 bottom-0 top-[50%] w-6 h-6 cursor-grab -translate-y-[50%]"
+    >
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
         <path
           fill="currentColor"

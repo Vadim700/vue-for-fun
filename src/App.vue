@@ -31,7 +31,7 @@ function setBg(topic) {
       bgColor.value = 'linear-gradient(to right bottom, #5c6bc0, #42a5f5)'
       break
     default:
-      bgColor.value = ''
+      bgColor.value = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
   }
 }
 </script>
