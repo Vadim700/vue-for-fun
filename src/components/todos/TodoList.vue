@@ -11,7 +11,15 @@
     <div class="">
       <h2 class="text-white text-2xl text-center mb-2">In progress</h2>
       <ul>
-        <motion.li v-for="todo of todos" drag :dragConstraints="constraintsRef" :key="todo.id">
+        <motion.li
+          v-for="todo of todos"
+          :key="todo.id"
+          drag
+          :dragConstraints="constraintsRef"
+          @drag="handleDrag"
+          @dragStart="handleDragStart"
+          @dragEnd="handleDragEnd"
+        >
           <TodoItem :todo="todo" />
         </motion.li>
       </ul>
@@ -34,14 +42,17 @@
 
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
-import { motion, useScroll, Reorder } from 'motion-v'
+import { motion, useScroll, Reorder, useMotionValue } from 'motion-v'
 import TodoItem from './TodoItem.vue'
 import { useTodoStore } from '@/stores/todos'
 import { useDomRef } from 'motion-v'
+import { useRaisedShadow } from '@/use/useRaisedShadow'
 
 const store = useTodoStore()
 onMounted(() => store.fetchData())
 const todos = computed(() => store.todos)
+const y = useMotionValue(0)
+const boxShadow = useRaisedShadow(y)
 
 const constraintsRef = useDomRef() // не позволяет вылетать элементам при D&D за пределеы этого ref
 
@@ -58,6 +69,27 @@ const completed = computed(() => todos.value.filter((todo) => todo.completed))
 const values = todos.value.map((i) => i.id)
 
 const toDo = computed(() => todos.value.filter((todo) => !todo.completed))
+
+const handleDragStart = (event, info) => {}
+
+const handleDrag = (event, info) => {
+  event.target.closest('li')?.classList.add('draged')
+}
+
+const handleDragEnd = (event, info) => {
+  event.target.closest('li')?.classList.remove('draged')
+}
 </script>
 
-<style lang="sсss" scoped></style>
+<style lang="scss" scoped>
+li {
+  position: relative;
+  z-index: 5;
+  transition: box-shadow 0.2s;
+}
+
+.draged {
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+</style>
