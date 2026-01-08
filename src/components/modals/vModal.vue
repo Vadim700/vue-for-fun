@@ -43,6 +43,7 @@ import { X } from 'lucide-vue-next'
 import { onMounted, onUnmounted, ref } from 'vue'
 import { motion } from 'motion-v'
 
+// const props = defineProps(['open'])
 const emit = defineEmits(['close'])
 const modalInner = ref(null)
 const props = defineProps({
