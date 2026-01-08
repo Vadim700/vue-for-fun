@@ -7,12 +7,7 @@
       </div>
       <button class="add-btn" @click="emit('addTask', status)" title="Add task">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <path
-            d="M10 4V16M4 10H16"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-          />
+          <path d="M10 4V16M4 10H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
         </svg>
       </button>
     </div>
