@@ -43,13 +43,13 @@ import KanbanCard from './KanbanCard.vue'
 interface Task {
   id: string
   title: string
-  status: 'todo' | 'in_progress' | 'completed'
+  status: 'todo' | 'in_progress' | 'completed' | 'stop'
   position: number
 }
 
 const props = defineProps<{
   title: string
-  status: 'todo' | 'in_progress' | 'completed'
+  status: 'todo' | 'in_progress' | 'completed' | 'stop'
   tasks: Task[]
   color: string
 }>()

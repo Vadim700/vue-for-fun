@@ -3,7 +3,7 @@
     <div
       ref="modal"
       v-if="open"
-      class="w-full h-full grid absolute top-0 left-0 before:absolute before:bg-black before:w-full before:h-full before:opacity-80 before:backdrop-blur-[5px]"
+      class="w-full h-full grid absolute z-5 top-0 left-0 before:absolute before:bg-black before:w-full before:h-full before:opacity-80 before:backdrop-blur-[5px]"
       @click="handleOutsideClick"
     >
       <motion.div
