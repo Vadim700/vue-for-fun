@@ -9,14 +9,15 @@
         :tasks="getTasksByStatus(column.status)"
         :color="column.color"
         @drop="handleDrop"
-        @delete="deleteTask"
+        @delete="confirmDelete"
         @add-task="addTask"
       />
     </div>
   </div>
-  <vModal :open="openModal" @close="openModal = false">
+
+  <vModal :open="openPrompt" @close="openPrompt = false">
     <template #header>Add task</template>
-    <form @submit.prevent="onSubmit">
+    <form @submit.prevent="onSubmit" class="pb-4">
       <input
         class="todo-input mb-8"
         type="text"
@@ -27,6 +28,20 @@
         Add task
       </button>
     </form>
+  </vModal>
+
+  <vModal :open="openConfirm" @close="openConfirm = false">
+    <template #header>Delete task</template>
+    <p class="mt-8">Are you sure you want to delete this task?</p>
+
+    <div class="flex gap-4 justify-end mb-4 mt-8">
+      <button type="submit" class="submit-btn max-w-[150px] gray-400" @click="openConfirm = false">
+        Cancel
+      </button>
+      <button type="submit" class="submit-btn max-w-[150px] red-500" @click="deleteTask">
+        Delete task
+      </button>
+    </div>
   </vModal>
 </template>
 
@@ -46,11 +61,13 @@ interface Task {
 }
 
 const taskTitle = ref<String>('')
-const openModal = ref(false)
+const openPrompt = ref(false)
+const openConfirm = ref(false)
 const tasks = ref<Task[]>([])
 const nextId = ref(1)
 let inputColor = ref<TaskColor>('#3b82f6')
 let taskStatus = ref('')
+const deletedTaskId = ref<String | null>('')
 
 const columns = [
   { title: 'To Do', status: 'todo' as const, color: '#3b82f6' },
@@ -66,12 +83,19 @@ const getTasksByStatus = (status: string) => {
 const addTask = (status: string) => {
   taskStatus.value = status
   inputColor.value = columns.find((col) => col.status === taskStatus.value)?.color as TaskColor
-  openModal.value = true
+  openPrompt.value = true
 }
 
-const deleteTask = (id: string) => {
-  if (!confirm('Are you sure you want to delete this task?')) return
-  tasks.value = tasks.value.filter((task) => task.id !== id)
+const deleteTask = () => {
+  if (!deletedTaskId.value) return
+
+  tasks.value = tasks.value.filter((task) => task.id !== deletedTaskId.value)
+  openConfirm.value = false
+}
+
+const confirmDelete = (id: string) => {
+  deletedTaskId.value = id
+  openConfirm.value = true
 }
 
 const handleDrop = (taskId: string, _fromStatus: string, toStatus: string) => {
@@ -87,7 +111,7 @@ const handleDrop = (taskId: string, _fromStatus: string, toStatus: string) => {
 }
 
 const resetForm = () => {
-  openModal.value = false
+  openPrompt.value = false
   taskTitle.value = ''
   taskStatus.value = ''
 }
@@ -103,7 +127,7 @@ const onSubmit = (e) => {
       columnTasks.length > 0 ? Math.max(...columnTasks.map((t) => t.position)) : -1
 
     const newTask: Task = {
-      id: `task-${nextId.value++}`,
+      id: crypto.randomUUID(),
       title: title.trim(),
       status: taskStatus.value as TaskStatus,
       position: maxPosition + 1,
@@ -181,7 +205,6 @@ const onSubmit = (e) => {
   border-radius: 6px;
   width: 100%;
   padding: 4px 8px;
-  margin-bottom: 16px;
 
   color: #fff;
   text-transform: uppercase;
@@ -201,6 +224,14 @@ const onSubmit = (e) => {
     user-select: none;
     pointer-events: none;
   }
+}
+
+.gray-400 {
+  background: #99a1af;
+}
+
+.red-500 {
+  background: #fb2c36;
 }
 
 @keyframes gradientShift {
