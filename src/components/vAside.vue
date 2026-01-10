@@ -1,10 +1,13 @@
 <template>
-  <aside class="aside py-4">
-    <ul class="aside__list flex flex-col">
+  <aside
+    class="py-4 px-4 rounded-2xl bg-gradient-to-b from-[#fef9c2] via-yellow-200 to-[#fdc800] h-screen"
+    :class="$attrs.class"
+  >
+    <ul class="flex flex-col">
       <li
         v-for="link in links"
         :key="link.path"
-        class="aside__item first:border-t-2 border-b-2 border-zinc-400 uppercase"
+        class="not-last:border-b-2 border-zinc-400 uppercase text-xl px-4"
       >
         <RouterLink
           :to="link.path"
