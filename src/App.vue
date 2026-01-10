@@ -28,7 +28,7 @@ function setBg(topic) {
       bgColor.value = 'linear-gradient(to right bottom, #5EC6C7, #066f72)'
       break
     case 'onlycss':
-      bgColor.value = 'linear-gradient(to right bottom, #5c6bc0, #42a5f5)'
+      bgColor.value = '#fff'
       break
     default:
       bgColor.value = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
