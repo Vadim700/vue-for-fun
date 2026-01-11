@@ -1,6 +1,6 @@
 <template>
-  <div class="kanban-board">
-    <div class="columns-container">
+  <div class="kanban-board h-[90%]">
+    <div class="columns-container h-full">
       <KanbanColumn
         v-for="column in columns"
         :key="column.status"
@@ -165,7 +165,7 @@ const onSubmit = (e) => {
   align-items: flex-start;
   overflow-x: auto;
   padding: 25px 0 16px;
-  justify-content: center;
+  justify-content: space-between;
 }
 
 .columns-container::-webkit-scrollbar {
@@ -243,9 +243,9 @@ const onSubmit = (e) => {
   }
 }
 
-@media (max-width: 1480px) {
-  .columns-container {
-    flex-wrap: wrap;
+@media (width <= 1048px) {
+  .kanban-board {
+    justify-content: start;
   }
 }
 
