@@ -11,19 +11,21 @@
   </div>
 </template>
 
-<script lang="ts" setup>
-type BGs = {
-  id: number
-}
+<script setup>
+import { useBgStore } from '@/stores/bgs'
+import { formatObjectToCSS } from '../../use/useFormatObjectToCss'
+
+const store = useBgStore()
 
 const handleClick = (e) => {
   const styles = window.getComputedStyle(e.target, '::after')
-  console.log(styles.backgroundImage)
+
+  store.setCurrentItem(styles)
 }
 
-const bgs: BGs[] = Array.from(Array(48)).map((_, i) => ({ id: i }))
+const bgs = Array.from(Array(48)).map((_, i) => ({ id: i }))
 
-const getDataAttributes = (item: { id: string | number }) => ({
+const getDataAttributes = (item) => ({
   [`data-bg-${item.id}`]: '',
 })
 </script>
@@ -95,6 +97,18 @@ const getDataAttributes = (item: { id: string | number }) => ({
     top: 0;
     left: 0;
     z-index: 2;
+  }
+}
+
+[data-bg-0] {
+  &::after {
+    background:
+      linear-gradient(135deg, #eceddc 25%, transparent 25%) -50px 0,
+      linear-gradient(225deg, #eceddc 25%, transparent 25%) -50px 0,
+      linear-gradient(315deg, #eceddc 25%, transparent 25%),
+      linear-gradient(45deg, #eceddc 25%, transparent 25%);
+    background-size: 100px 100px;
+    background-color: #ec173a;
   }
 }
 
@@ -1147,17 +1161,6 @@ const getDataAttributes = (item: { id: string | number }) => ({
         transparent 90%,
         transparent 100%
       );
-  }
-}
-[data-bg-0] {
-  &::after {
-    background:
-      linear-gradient(135deg, #eceddc 25%, transparent 25%) -50px 0,
-      linear-gradient(225deg, #eceddc 25%, transparent 25%) -50px 0,
-      linear-gradient(315deg, #eceddc 25%, transparent 25%),
-      linear-gradient(45deg, #eceddc 25%, transparent 25%);
-    background-size: 100px 100px;
-    background-color: #ec173a;
   }
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <aside
-    class="py-4 px-4 rounded-2xl bg-gradient-to-b from-[#fef9c2] via-yellow-200 to-[#fdc800] h-screen"
+    class="py-4 px-4 rounded-2xl bg-gradient-to-b from-[#fef9c2] via-yellow-200 to-[#fdc800] h-[85vh] min-w-50"
     :class="$attrs.class"
   >
     <ul class="flex flex-col">

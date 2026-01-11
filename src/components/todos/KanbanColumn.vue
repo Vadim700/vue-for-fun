@@ -7,7 +7,12 @@
       </div>
       <button class="add-btn" @click="emit('addTask', status)" title="Add task">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <path d="M10 4V16M4 10H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path
+            d="M10 4V16M4 10H16"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
         </svg>
       </button>
     </div>
@@ -94,13 +99,14 @@ const handleDrop = (e: DragEvent) => {
   background: #f8f9fa;
   border-radius: 12px;
   padding: 16px;
-  min-width: 320px;
-  max-width: 380px;
   flex: 1;
   display: flex;
   flex-direction: column;
-  height: fit-content;
-  max-height: calc(100vh - 200px);
+  height: 100%;
+
+  @media (width <= 1048px) {
+    min-width: 240px;
+  }
 }
 
 .column-header {
