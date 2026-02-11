@@ -30,9 +30,9 @@ const routes = [
       name: 'onlycss-slider',
       component: () => import('../views/onlycss/Slider.vue')
     }, {
-      path: 'payments',
-      name: 'onlycss-payments',
-      component: () => import('../views/onlycss/FaqPayments.vue')
+      path: 'scroll',
+      name: 'onlycss-scroll',
+      component: () => import('../views/onlycss/scroll.vue')
     }]
   },
   {

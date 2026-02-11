@@ -112,8 +112,8 @@ const links = [
     label: 'Slider',
   },
   {
-    path: '/onlycss/payments',
-    label: 'payments',
+    path: '/onlycss/scroll',
+    label: 'scroll',
   },
 ]
 
