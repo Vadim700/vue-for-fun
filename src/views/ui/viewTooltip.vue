@@ -1,10 +1,69 @@
 <template>
-  <div>
-    <h2 class="text-3xl mb-4">tooltip</h2>
+  <div class="items-center grid place-content-center">
+    <h2 class="text-3xl mb-20">Tooltip</h2>
 
-    <p class="text-xl mb-2">
-      Lorem ipsum dolor, sit amet consectetur adipisicing elit. Omnis quasi quisquam perspiciatis ab
-      est sed repudiandae, provident doloremque exercitationem harum.
-    </p>
+    <div class="tooltip">
+      <div class="tolltip__trigger">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <g fill="none">
+            <path
+              d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z"
+            />
+            <path
+              fill="currentColor"
+              d="M12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2m0 2a8 8 0 1 0 0 16a8 8 0 0 0 0-16m0 12a1 1 0 1 1 0 2a1 1 0 0 1 0-2m0-9.5a3.625 3.625 0 0 1 1.348 6.99a.8.8 0 0 0-.305.201c-.044.05-.051.114-.05.18L13 14a1 1 0 0 1-1.993.117L11 14v-.25c0-1.153.93-1.845 1.604-2.116a1.626 1.626 0 1 0-2.229-1.509a1 1 0 1 1-2 0A3.625 3.625 0 0 1 12 6.5"
+            />
+          </g>
+        </svg>
+      </div>
+      <div class="tooltip__bubble">Helper Text</div>
+    </div>
   </div>
 </template>
+
+<style scoped>
+.tooltip {
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+}
+
+.tooltip__bubble {
+  position: absolute;
+  bottom: calc(100% + 13px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 13px 21px 8px;
+  display: none;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.5;
+  text-align: center;
+  white-space: nowrap;
+  color: var(--grey-2);
+  background: var(--blue);
+  box-shadow: 0px 2px 4px rgba(33, 36, 41, 0.05);
+  border-radius: 10px;
+}
+
+.tooltip__icon {
+  width: 22px;
+  height: 22px;
+}
+
+.tooltip__bubble::after {
+  content: '';
+  border: 10px solid transparent;
+  border-top: 10px solid var(--blue);
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tolltip__trigger:hover ~ .tooltip__bubble {
+  display: block;
+}
+</style>

@@ -1,7 +1,7 @@
 <template>
   <div class="grid grid-cols-4 gap-8">
     <Aside :links="links" />
-    <div class="main col-span-3 overflow-auto">
+    <div class="grid grid-rows-[auto_1fr] col-span-3">
       <h1 class="text-4xl my-6 text-center text-red-800 uppercase font-bold">
         Reusable component library
       </h1>
