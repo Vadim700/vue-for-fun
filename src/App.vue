@@ -20,19 +20,19 @@ watch(
 )
 
 function setBg(topic) {
-  switch (topic) {
-    case 'posts':
-      bgColor.value = 'linear-gradient(to right bottom, #04a561, #01703e)'
-      break
-    case 'todos':
-      bgColor.value = 'linear-gradient(to right bottom, #5EC6C7, #066f72)'
-      break
-    case 'onlycss':
-      bgColor.value = '#fff'
-      break
-    default:
-      bgColor.value = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-  }
+  // switch (topic) {
+  //   case 'posts':
+  //     bgColor.value = 'linear-gradient(to right bottom, #04a561, #01703e)'
+  //     break
+  //   case 'todos':
+  //     bgColor.value = 'linear-gradient(to right bottom, #5EC6C7, #066f72)'
+  //     break
+  //   case 'onlycss':
+  //     bgColor.value = '#fff'
+  //     break
+  //   default:
+  // bgColor.value = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+  // }
 }
 </script>
 <style lang="scss">
@@ -48,7 +48,7 @@ body {
   display: grid;
   grid-template-rows: 92px auto;
 
-  background: linear-gradient(to right bottom, #108156, #108156);
+  // background: linear-gradient(to right bottom, #108156, #108156);
 
   font-family: 'Nunito', sans-serif;
 }
@@ -98,6 +98,4 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #7a3306;
 }
-
-
 </style>
