@@ -40,15 +40,36 @@ const routes = [
     name: 'ui',
     component: UI,
     children: [{
-      path: 'service',
+      path: 'tooltip',
       name: 'ui-service',
-      component: () => import('../views/ui/UiService.vue')
+      component: () => import('../views/ui/viewTooltip.vue')
     },
     {
-      path: 'use',
-      name: 'ui-use',
-      component: () => import('../views/ui/UiUse.vue')
-    }]
+      path: 'elements',
+      name: 'elements',
+      component: () => import('../views/ui/viewElements.vue')
+    },
+    {
+      path: 'calendar',
+      name: 'calendar',
+      component: () => import('../views/ui/viewCalendar.vue')
+    },
+    {
+      path: 'modal',
+      name: 'modal',
+      component: () => import('../views/ui/viewModal.vue')
+    },
+    {
+      path: 'histogram',
+      name: 'histogram',
+      component: () => import('../views/ui/viewHistogram.vue')
+    },
+    {
+      path: 'avatar',
+      name: 'avatar',
+      component: () => import('../views/ui/viewAvatar.vue')
+    }
+    ]
   },
   {
     path: '/funjs',
