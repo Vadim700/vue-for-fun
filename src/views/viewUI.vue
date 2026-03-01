@@ -9,14 +9,14 @@
         Reusable component library
       </h1>
 
-      <div v-if="isUiPage" class="grid grid-cols-[repeat(auto-fill,minmax(325px,1fr))] gap-3">
+      <div v-if="isUiPage" class="grid grid-cols-3 grid-rows-2 gap-3 mx-auto">
         <RouterLink
           to="/ui/tooltip"
           class="grid grid-rows-[1fr_auto_auto] border rounded-xl aspect-square p-2 text-center"
         >
           <Tooltip class="pt-10" :title="'Helper text'" :active="true" />
-          <h3 class="text-3xl">Tooltip</h3>
-          <span class="text-xl">Container</span>
+          <h3 class="text-2xl">Tooltip</h3>
+          <span class="text-lg">Container</span>
         </RouterLink>
 
         <RouterLink
@@ -31,8 +31,8 @@
             <Checkbox :title="'Checked'" :checked="true" />
             <Checkbox :title="'Disabled'" :disabled="true" :checked="true" />
           </div>
-          <h3 class="text-3xl">Form Elements</h3>
-          <span class="text-xl">Element</span>
+          <h3 class="text-2xl">Form Elements</h3>
+          <span class="text-lg">Element</span>
         </RouterLink>
 
         <RouterLink
@@ -40,32 +40,56 @@
           class="grid grid-rows-[1fr_auto_auto] border rounded-xl aspect-square p-2 text-center"
         >
           <Calendar :preview="true" class="m-auto" />
-          <h3 class="text-3xl">Calendar</h3>
-          <span class="text-xl">Container</span>
+          <h3 class="text-2xl">Calendar</h3>
+          <span class="text-lg">Container</span>
         </RouterLink>
 
         <RouterLink
           to="/ui/modal"
           class="grid grid-rows-[1fr_auto_auto] border rounded-xl aspect-square p-2 text-center"
         >
-          <h3 class="text-3xl">Modal</h3>
-          <span class="text-xl">Container</span>
+          <div
+            class="p-6 relative before:absolute before:w-full before:h-full before:bg-gray-900 before:left-0 before:top-0 before:opacity-50 select-none"
+          >
+            <div
+              class="bg-white absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 px-8 py-4 rounded-md"
+            >
+              <form action="#" @submit.prevent>
+                <div class="mb-2 grid grid-rows-2">
+                  <label for="name" class="uppercase text-left">Name</label>
+                  <input type="text" id="name" class="border border-zinc-400 rounded-sm" />
+                </div>
+                <div class="mb-2 grid grid-rows-2">
+                  <label for="mail" class="uppercase text-left">Email</label>
+                  <input type="text" id="mail" class="border border-zinc-400 rounded-sm" />
+                </div>
+                <button
+                  @click="openModal = false"
+                  class="uppercase bg-blue-400 px-10 py-2 text-md text-white w-full rounded-sm hover:bg-blue-500 cursor-pointer transition-colors"
+                >
+                  Submit
+                </button>
+              </form>
+            </div>
+          </div>
+          <h3 class="text-2xl">Modal</h3>
+          <span class="text-lg">Container</span>
         </RouterLink>
 
         <RouterLink
           to="/ui/histogram"
           class="grid grid-rows-[1fr_auto_auto] border rounded-xl aspect-square p-2 text-center"
         >
-          <h3 class="text-3xl">Histogram</h3>
-          <span class="text-xl">Container</span>
+          <h3 class="text-2xl">Histogram</h3>
+          <span class="text-lg">Container</span>
         </RouterLink>
 
         <RouterLink
           to="/ui/avatar"
           class="grid grid-rows-[1fr_auto_auto] border rounded-xl aspect-square p-2 text-center"
         >
-          <h3 class="text-3xl">Avatar</h3>
-          <span class="text-xl">Container</span>
+          <h3 class="text-2xl">Avatar</h3>
+          <span class="text-lg">Container</span>
         </RouterLink>
       </div>
 
@@ -81,7 +105,6 @@ import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import Checkbox from '@/components/ui/Checkbox.vue'
 import Radio from '@/components/ui/Radio.vue'
-import Switcher from '@/components/ui/Switcher.vue'
 import Calendar from '@/components/ui/Calendar.vue'
 
 const router = useRouter()

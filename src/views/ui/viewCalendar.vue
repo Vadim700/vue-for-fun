@@ -73,7 +73,6 @@ const css = `
 	background: var(--white);
 	border-radius: 8px;
 	border: 1px solid var(--grey-3);
-
 	font-family: 'Inter';
 	font-style: normal;
 	font-weight: 400;
@@ -81,7 +80,6 @@ const css = `
 	font-size: 16px;
 	box-sizing: border-box;
 }
-
 .calendar__header {
 	margin-bottom: 24px;
 	font-weight: 600;
@@ -90,12 +88,10 @@ const css = `
 	text-align: center;
 	background: var(--white);
 }
-
 .calendar__wrapper {
 	padding-bottom: 100%;
 	position: relative;
 }
-
 .calendar__inner {
 	position: absolute;
 	right: 0;
@@ -105,48 +101,38 @@ const css = `
 	display: grid;
 	grid-template: repeat(7, 1fr)/repeat(7, 1fr);
 }
-
 .calendar__item {
 	background: var(--white);
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
-
 .calendar__item_day {
 	font-size: 14px;
 	color: var(--calendar-day);
 }
-
 .calendar__item_active {
 	background: var(--blue);
 	color: var(--white)
 }
-
-
 .calendar__item_between-active {
 	background: var(--calenar-between-bg);
 }
-
 .calendar_preview {
 	width: 200px;
 	font-size: 12px;
 	padding: 15px;
 }
-
 .calendar_preview .calendar__header {
 	font-size: 14px;
 	margin-bottom: 8px;
 }
-
 .calendar_preview .calendar__item {
 	font-size: 12px;
 }
-
 .calendar_preview .calendar__item_day {
 	font-size: 10px;
 }
-
 .calendar_preview .calendar__inner {
 	grid-template: repeat(6, 1fr)/repeat(7, 1fr);
 }
