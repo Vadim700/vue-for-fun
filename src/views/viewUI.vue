@@ -22,6 +22,14 @@
           to="/ui/elements"
           class="grid grid-rows-[1fr_auto_auto] border rounded-xl aspect-square p-2 text-center"
         >
+          <div class="grid grid-rows-3 grid-cols-2 grid-flow-col m-auto gap-x-8 gap-y-4">
+            <Radio :title="'Default'" />
+            <Radio :title="'Selected'" :checked="true" />
+            <Radio :title="'Desabled'" :disabled="true" />
+            <Checkbox :title="'Default'" />
+            <Checkbox :title="'Checked'" :checked="true" />
+            <Checkbox :title="'Disabled'" :disabled="true" :checked="true" />
+          </div>
           <h3 class="text-3xl">Form Elements</h3>
           <span class="text-xl">Element</span>
         </RouterLink>
@@ -65,6 +73,9 @@ import Tooltip from '@/components/ui/Tooltip.vue'
 import Aside from '../components/vAside.vue'
 import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import Checkbox from '@/components/ui/Checkbox.vue'
+import Radio from '@/components/ui/Radio.vue'
+import Switcher from '@/components/ui/Switcher.vue'
 
 const router = useRouter()
 const isUiPage = ref(router.currentRoute.value.path === '/ui')

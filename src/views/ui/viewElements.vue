@@ -1,146 +1,129 @@
 <template>
   <div class="items-center grid place-content-center">
     <h2 class="text-3xl mb-20">Custom form elements</h2>
-    <div class="component-description__top-content card__content_grid-preview">
-      <label class="checkbox">
-        <input type="checkbox" class="checkbox__input" />
-        <div class="checkbox__state">
-          <div class="checkbox__control">
-            <svg class="checkbox__icon">
-              <!-- <use href="/assets/images/sprite.svg#check"></use> -->
-            </svg>
-          </div>
-          <div class="checkbox__label">Default</div>
-        </div>
-      </label>
-      <label class="checkbox">
-        <input type="checkbox" class="checkbox__input" />
-        <div class="checkbox__state">
-          <div class="checkbox__control">
-            <svg class="checkbox__icon">
-              <!-- <use href="/assets/images/sprite.svg#check"></use> -->
-            </svg>
-          </div>
-          <div class="checkbox__label">Checked</div>
-        </div>
-      </label>
-      <label class="checkbox">
-        <input type="checkbox" class="checkbox__input" />
-        <div class="checkbox__state">
-          <div class="checkbox__control">
-            <svg class="checkbox__icon">
-              <!-- <use href="/assets/images/sprite.svg#check"></use> -->
-            </svg>
-          </div>
-          <div class="checkbox__label">Disabled</div>
-        </div>
-      </label>
+    <div class="grid grid-rows-3 grid-cols-2 grid-flow-col gap-x-8 gap-y-4">
+      <Radio :title="'Default'" />
+      <Radio :title="'Selected'" :checked="true"/>
+      <Radio :title="'Desabled'" :disabled="true" />
+      <Checkbox :title="'Default'" />
+      <Checkbox :title="'Checked'" :checked="true" />
+      <Checkbox :title="'Disabled'" :disabled="true" :checked="true" />
+      <Switcher :size="52" :checked="false">
+        <template #right>
+          <span class="ml-2 hover:underline cursor-pointer">Off</span>
+        </template>
+      </Switcher>
 
-      <label class="radio">
-        <input type="radio" class="radio__input" name="radio-name" />
-        <div class="radio__state">
-          <div class="radio__control"></div>
-          <div class="radio__label">Default</div>
-        </div>
-      </label>
-      <label class="radio">
-        <input type="radio" class="radio__input" name="radio-name" />
-        <div class="radio__state">
-          <div class="radio__control"></div>
-          <div class="radio__label">Selected</div>
-        </div>
-      </label>
-      <label class="radio">
-        <input type="radio" class="radio__input" name="radio-name" />
-        <div class="radio__state">
-          <div class="radio__control"></div>
-          <div class="radio__label">Disabled</div>
-        </div>
-      </label>
+      <Switcher :size="52" :checked="true">
+        <template #right>
+          <span class="ml-2 hover:underline cursor-pointer">On</span>
+        </template>
+      </Switcher>
 
-      <label class="toggler">
-        <input type="checkbox" class="toggler__input" />
-        <div class="toggler__state">
-          <div class="toggler__control"></div>
-          <div class="toggler__label">Off</div>
-        </div>
-      </label>
-      <label class="toggler">
-        <input type="checkbox" class="toggler__input" />
-        <div class="toggler__state">
-          <div class="toggler__control"></div>
-          <div class="toggler__label">On</div>
-        </div>
-      </label>
-      <label class="toggler">
-        <input type="checkbox" class="toggler__input" />
-        <div class="toggler__state">
-          <div class="toggler__control"></div>
-          <div class="toggler__label">Disabled</div>
-        </div>
-      </label>
+      <Switcher :disabled="true">
+        <template #right>
+          <span class="ml-2">Disabled</span>
+        </template>
+      </Switcher>
     </div>
   </div>
 
   <Tabs :html :css />
 </template>
 
-<script setup lang="ts">
+<script setup>
 import Tabs from '@/components/shared/vTabs.vue'
+import Checkbox from '@/components/ui/Checkbox.vue'
+import Radio from '@/components/ui/Radio.vue'
+import Switcher from '@/components/ui/Switcher.vue'
 
 const html = `
-<div class="tooltip">
-	<div class="tolltip__trigger">
-		<svg class="tooltip__icon">
-			<use href="/assets/images/sprite.svg#help"></use>
-		</svg>
-	</div>
-	<div class="tooltip__bubble">Helper Text</div>
-</div>
+<label class="checkbox">
+  <input type="checkbox" class="checkbox__input">
+  <div class="checkbox__state">
+    <div class="checkbox__control">
+      <svg class="checkbox__icon">
+        <use href="/assets/images/sprite.svg#check"></use>
+      </svg>
+    </div>
+    <div class="checkbox__label">Default</div>
+  </div>
+</label>
+
+<label class="radio">
+  <input type="radio" class="radio__input" name="radio-name" checked>
+  <div class="radio__state">
+    <div class="radio__control"></div>
+    <div class="radio__label">Selected</div>
+  </div>
+</label>
+
+<label class="toggler">
+  <input type="checkbox" class="toggler__input">
+  <div class="toggler__state">
+    <div class="toggler__control"></div>
+    <div class="toggler__label">Off</div>
+  </div>
+</label>
 `
 const css = `
-.tooltip {
-	position: relative;
+.checkbox {
 	display: inline-block;
+	position: relative;
 }
-
-.tooltip__bubble {
+.checkbox__input {
 	position: absolute;
-	bottom: calc(100% + 13px);
-	left: 50%;
-	transform: translateX(-50%);
-	padding: 13px 21px 8px;
+	clip: rect(0, 0, 0, 0);
+}
+.checkbox__state {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	cursor: pointer;
+}
+.checkbox__control {
+	width: 28px;
+	height: 28px;
+	background: var(--white);
+	border: 1px solid var(--grey-2);
+	border-radius: 4px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.checkbox__icon {
+	width: 28px;
+	height: 28px;
+	color: var(--white);
 	display: none;
+}
+.checkbox__label {
 	font-family: 'Inter';
 	font-style: normal;
 	font-weight: 400;
 	font-size: 16px;
 	line-height: 1.5;
-	text-align: center;
-	white-space: nowrap;
-	color: var(--grey-2);
-	background: var(--blue);
-	box-shadow: 0px 2px 4px rgba(33, 36, 41, 0.05);
-	border-radius: 10px;
+	color: var(--grey-4);
+	user-select: none;
 }
-
-.tooltip__icon {
-	width: 22px;
-	height: 22px;
-}
-
-.tooltip__bubble::after {
-	content: '';
-	border: 10px solid transparent;
-	border-top: 10px solid var(--blue);
-	position: absolute;
-	top: 100%;
-	left: 50%;
-	transform: translateX(-50%);
-}
-
-.tolltip__trigger:hover~.tooltip__bubble {
+.checkbox__input:checked~.checkbox__state .checkbox__icon {
 	display: block;
+}
+.checkbox__input:checked~.checkbox__state .checkbox__control {
+	background: var(--blue);
+	border: 1px solid var(--blue);
+}
+.checkbox__input:focus~.checkbox__state .checkbox__label {
+	text-decoration: underline;
+}
+.checkbox__input:disabled~.checkbox__state .checkbox__control {
+	background: var(--grey-2);
+}
+.checkbox__input:disabled~.checkbox__state .checkbox__label {
+	color: var(--grey-2);
+}
+.checkbox__input:disabled~.checkbox__state {
+	cursor: default;
 }
 `
 </script>
