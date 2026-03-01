@@ -18,6 +18,7 @@
           <h3 class="text-3xl">Tooltip</h3>
           <span class="text-xl">Container</span>
         </RouterLink>
+
         <RouterLink
           to="/ui/elements"
           class="grid grid-rows-[1fr_auto_auto] border rounded-xl aspect-square p-2 text-center"
@@ -33,13 +34,16 @@
           <h3 class="text-3xl">Form Elements</h3>
           <span class="text-xl">Element</span>
         </RouterLink>
+
         <RouterLink
           to="/ui/calendar"
           class="grid grid-rows-[1fr_auto_auto] border rounded-xl aspect-square p-2 text-center"
         >
+          <Calendar :preview="true" class="m-auto" />
           <h3 class="text-3xl">Calendar</h3>
           <span class="text-xl">Container</span>
         </RouterLink>
+
         <RouterLink
           to="/ui/modal"
           class="grid grid-rows-[1fr_auto_auto] border rounded-xl aspect-square p-2 text-center"
@@ -47,6 +51,7 @@
           <h3 class="text-3xl">Modal</h3>
           <span class="text-xl">Container</span>
         </RouterLink>
+
         <RouterLink
           to="/ui/histogram"
           class="grid grid-rows-[1fr_auto_auto] border rounded-xl aspect-square p-2 text-center"
@@ -54,6 +59,7 @@
           <h3 class="text-3xl">Histogram</h3>
           <span class="text-xl">Container</span>
         </RouterLink>
+
         <RouterLink
           to="/ui/avatar"
           class="grid grid-rows-[1fr_auto_auto] border rounded-xl aspect-square p-2 text-center"
@@ -76,6 +82,7 @@ import { useRouter } from 'vue-router'
 import Checkbox from '@/components/ui/Checkbox.vue'
 import Radio from '@/components/ui/Radio.vue'
 import Switcher from '@/components/ui/Switcher.vue'
+import Calendar from '@/components/ui/Calendar.vue'
 
 const router = useRouter()
 const isUiPage = ref(router.currentRoute.value.path === '/ui')
