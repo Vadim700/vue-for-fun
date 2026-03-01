@@ -6,6 +6,7 @@ import router from './router'
 import vueHljs from "vue-hljs";
 import hljs from "highlight.js";
 import "vue-hljs/style.css";
+// import 'virtual:svg-icons-register'
 
 const app = createApp(App)
 const pinia = createPinia()
