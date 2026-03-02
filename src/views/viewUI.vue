@@ -80,6 +80,7 @@
           to="/ui/histogram"
           class="grid grid-rows-[1fr_auto_auto] border rounded-xl aspect-square p-2 text-center"
         >
+          <Histogram />
           <h3 class="text-2xl">Histogram</h3>
           <span class="text-lg">Container</span>
         </RouterLink>
@@ -105,7 +106,8 @@ import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import Checkbox from '@/components/ui/Checkbox.vue'
 import Radio from '@/components/ui/Radio.vue'
-import Calendar from '@/components/ui/Calendar.vue'
+import Calendar from '@/components/shared/Calendar.vue'
+import Histogram from '@/components/shared/Histogram.vue'
 
 const router = useRouter()
 const isUiPage = ref(router.currentRoute.value.path === '/ui')

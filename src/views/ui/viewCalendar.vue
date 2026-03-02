@@ -11,7 +11,7 @@
 
 <script setup>
 import Tabs from '@/components/shared/vTabs.vue';
-import Calendar from '@/components/ui/Calendar.vue';
+import Calendar from '@/components/shared/Calendar.vue';
 
 const html = `
 <div class="calendar ">
