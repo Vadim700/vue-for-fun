@@ -89,6 +89,7 @@
           to="/ui/avatar"
           class="grid grid-rows-[1fr_auto_auto] border rounded-xl aspect-square p-2 text-center"
         >
+        <Avatar class="m-auto"/>
           <h3 class="text-2xl">Avatar</h3>
           <span class="text-lg">Container</span>
         </RouterLink>
@@ -108,6 +109,7 @@ import Checkbox from '@/components/ui/Checkbox.vue'
 import Radio from '@/components/ui/Radio.vue'
 import Calendar from '@/components/shared/Calendar.vue'
 import Histogram from '@/components/shared/Histogram.vue'
+import Avatar from '@/components/shared/Avatar.vue'
 
 const router = useRouter()
 const isUiPage = ref(router.currentRoute.value.path === '/ui')
