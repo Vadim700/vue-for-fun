@@ -1,41 +1,49 @@
 <template>
-  <div class="grid grid-rows-[auto_1fr]">
-    <h2 class="text-3xl mb-4 text-center">Modal</h2>
+  <section>
+    <header class="mb-8">
+      <p class="eyebrow">UI · Container</p>
+      <h2 class="page-title mt-1 text-2xl sm:text-3xl">Modal</h2>
+      <p class="page-subtitle">
+        A modal built on Teleport: it locks page scrolling, closes on Escape and returns focus to
+        the trigger.
+      </p>
+    </header>
 
-    <button
-      @click="openModal = true"
-      class="rounded-sm bg-blue-400 hover:bg-blue-500 transition-colors px-8 py-2 uppercase cursor-pointer text-white m-auto"
-    >
-      Open modal
-    </button>
+    <div class="card grid place-items-center px-6 py-14">
+      <button type="button" class="btn btn-primary" @click="openModal = true">Open modal</button>
+    </div>
 
-    <Modal :open="openModal" @close="openModal = false">
+    <Modal :open="openModal" aria-label="Auth form" @close="openModal = false">
       <template #header>Auth</template>
-      <form action="#" @submit.prevent>
-        <div class="mb-4 grid grid-rows-2">
-          <label for="name" class="uppercase">Name</label>
-          <input type="text" id="name" class="border border-zinc-400 rounded-sm" />
-        </div>
-        <div class="mb-10 grid grid-rows-2">
-          <label for="mail" class="uppercase">Email</label>
-          <input type="text" id="mail" class="border border-zinc-400 rounded-sm" />
-        </div>
-        <button
-          @click="openModal = false"
-          class="uppercase bg-blue-400 px-10 py-2 text-md text-white w-full rounded-sm hover:bg-blue-500 cursor-pointer transition-colors"
-        >
-          Submit
-        </button>
+
+      <form class="space-y-4" @submit.prevent="openModal = false">
+        <label class="block">
+          <span class="text-ink-soft mb-1 block text-xs font-extrabold uppercase">Name</span>
+          <input
+            type="text"
+            class="w-full rounded-xl border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-amber-500"
+          />
+        </label>
+
+        <label class="block">
+          <span class="text-ink-soft mb-1 block text-xs font-extrabold uppercase">Email</span>
+          <input
+            type="email"
+            class="w-full rounded-xl border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-amber-500"
+          />
+        </label>
+
+        <button type="submit" class="btn btn-primary mt-2 w-full">Submit</button>
       </form>
     </Modal>
-  </div>
 
-  <Tabs :html :css />
+    <Tabs :html :css />
+  </section>
 </template>
 
 <script setup>
-import Modal from '@/components/modals/vModal.vue'
 import { ref } from 'vue'
+import Modal from '@/components/modals/vModal.vue'
 import Tabs from '@/components/shared/vTabs.vue'
 
 const openModal = ref(false)
@@ -45,36 +53,14 @@ const html = `
    <div class="modal__body">
       <div class="modal__inner">
          <button id="modal-close" class="modal__close">
-            <svg>
-               <use href="../assets/images/sprite.svg#close-popup"></use>
-            </svg>
+            <svg><use href="/assets/images/sprite.svg#close-popup"></use></svg>
          </button>
          <h3 class="modal__title">Modal title</h3>
          <div class="modal__content">
             <form action="#">
                <div class="formgroup">
                   <label for="input" class="formgroup__label">NAME</label>
-                  <div class="formgroup__wrapper">
-                     <input class="formgroup__input input" type="text" placeholder="Placeholder">
-                     <svg class="formgroup__icon formgroup__icon_success">
-                        <use href="../../assets/images/sprite.svg#success"></use>
-                     </svg>
-                     <svg class="formgroup__icon formgroup__icon_error">
-                        <use href="../../assets/images/sprite.svg#error"></use>
-                     </svg>
-                  </div>
-               </div>
-               <div class="formgroup">
-                  <label for="input" class="formgroup__label">EMAIL</label>
-                  <div class="formgroup__wrapper">
-                     <input class="formgroup__input input" type="text" placeholder="Placeholder">
-                     <svg class="formgroup__icon formgroup__icon_success">
-                        <use href="../../assets/images/sprite.svg#success"></use>
-                     </svg>
-                     <svg class="formgroup__icon formgroup__icon_error">
-                        <use href="../../assets/images/sprite.svg#error"></use>
-                     </svg>
-                  </div>
+                  <input class="formgroup__input input" type="text" placeholder="Placeholder">
                </div>
                <button type="submit" class="button button_primary">Submit</button>
             </form>
@@ -88,20 +74,8 @@ const css = `
 .modal {
    display: none;
    position: fixed;
-   bottom: 0;
-   right: 0;
-   top: 0;
-   left: 0;
+   inset: 0;
    background-color: rgba(0, 0, 0, .4);
-}
-.modal_preview {
-   display: block;
-   position: relative;
-   background-color: var(--white);
-   text-align: left;
-   padding: 20px;
-   background: rgba(0, 0, 0, .15);
-   pointer-events: none;
 }
 .modal__body {
    position: absolute;
@@ -115,40 +89,21 @@ const css = `
    position: relative;
    background: var(--white);
    border-radius: 8px;
-   font-family: 'Inter', sans-serif;
-}
-.modal__inner_review {
-   padding: 15px;
 }
 .modal__close {
-   display: block;
    position: absolute;
    top: 15px;
    right: 15px;
    cursor: pointer;
-   line-height: 1;
    border: none;
    background: var(--white);
 }
-.modal__close svg {
-   display: block;
-   width: 16px;
-   height: 16px;
-
-}
 .modal__title {
-   margin: 0;
-   margin-bottom: 14px;
+   margin: 0 0 14px;
    font-size: 20px;
    line-height: 1.2;
    font-weight: 600;
    color: var(--black-blue);
-}
-.modal__content {
-   font-size: 16px;
-   line-height: 1.5;
-   font-weight: 400;
-   color: var(--grey-4)
 }
 `
 </script>

@@ -1,19 +1,29 @@
 <template>
-  <div class="items-center grid place-content-center">
-    <h2 class="text-3xl mb-20">Tooltip</h2>
-    <Tooltip :title="'Helper text'" />
-  </div>
+  <section>
+    <header class="mb-8">
+      <p class="eyebrow">UI · Container</p>
+      <h2 class="page-title mt-1 text-2xl sm:text-3xl">Tooltip</h2>
+      <p class="page-subtitle">
+        A CSS-only tooltip: it appears above the icon on hover and needs no JS positioning.
+      </p>
+    </header>
 
-  <Tabs :html :css />
+    <div class="card grid place-items-center gap-10 px-6 py-12">
+      <Tooltip title="Helper text" />
+      <p class="text-ink-soft text-sm">Hover the icon</p>
+    </div>
+
+    <Tabs :html :css />
+  </section>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import Tabs from '@/components/shared/vTabs.vue'
 import Tooltip from '@/components/ui/Tooltip.vue'
 
 const html = `
 <div class="tooltip">
-	<div class="tolltip__trigger">
+	<div class="tooltip__trigger">
 		<svg class="tooltip__icon">
 			<use href="/assets/images/sprite.svg#help"></use>
 		</svg>
@@ -21,6 +31,7 @@ const html = `
 	<div class="tooltip__bubble">Helper Text</div>
 </div>
 `
+
 const css = `
 .tooltip {
 	position: relative;
@@ -35,8 +46,6 @@ const css = `
 	padding: 13px 21px 8px;
 	display: none;
 	font-family: 'Inter';
-	font-style: normal;
-	font-weight: 400;
 	font-size: 16px;
 	line-height: 1.5;
 	text-align: center;
@@ -62,10 +71,8 @@ const css = `
 	transform: translateX(-50%);
 }
 
-.tolltip__trigger:hover~.tooltip__bubble {
+.tooltip__trigger:hover ~ .tooltip__bubble {
 	display: block;
 }
 `
 </script>
-
-<style scoped lang="scss"></style>

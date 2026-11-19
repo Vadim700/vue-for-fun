@@ -1,101 +1,65 @@
 <template>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
   <Header />
-  <main class="px-16 py-8 overflow-y-auto custom-scrollbar w-full" :style="{ background: bgColor }">
-    <RouterView></RouterView>
+
+  <main id="main-content" class="w-full flex-1">
+    <div class="mx-auto w-full max-w-[1440px] px-4 py-8 sm:px-8 sm:py-10 lg:px-12">
+      <RouterView v-slot="{ Component }">
+        <Transition name="page" mode="out-in">
+          <!--
+            The wrapper guarantees Transition always has a single element root,
+            even when a page renders a fragment (e.g. ViewOnlyCss).
+          -->
+          <div :key="route.matched[0]?.path ?? route.path">
+            <component :is="Component" />
+          </div>
+        </Transition>
+      </RouterView>
+    </div>
   </main>
+
+  <footer class="border-t border-black/5 bg-white/50">
+    <div
+      class="text-ink-soft mx-auto flex w-full max-w-[1440px] flex-col gap-2 px-4 py-6 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-12"
+    >
+      <p>© {{ year }} Vue for Fun — a Vue 3 pet project</p>
+      <p class="flex flex-wrap items-center gap-x-2 gap-y-1">
+        <span>Vue 3</span>
+        <span aria-hidden="true">·</span>
+        <span>Vite</span>
+        <span aria-hidden="true">·</span>
+        <span>Pinia</span>
+        <span aria-hidden="true">·</span>
+        <span>Tailwind CSS</span>
+      </p>
+    </div>
+  </footer>
 </template>
 
 <script setup>
+import { useRoute } from 'vue-router'
 import Header from '@/components/vHeader.vue'
-import { useMainStore } from './stores/main'
-import { watch, ref, onMounted } from 'vue'
 
-const store = useMainStore()
-const bgColor = ref('')
-
-watch(
-  () => store.topic,
-  (newTopic) => setBg(newTopic),
-  { immediate: true },
-)
-
-function setBg(topic) {
-  // switch (topic) {
-  //   case 'posts':
-  //     bgColor.value = 'linear-gradient(to right bottom, #04a561, #01703e)'
-  //     break
-  //   case 'todos':
-  //     bgColor.value = 'linear-gradient(to right bottom, #5EC6C7, #066f72)'
-  //     break
-  //   case 'onlycss':
-  //     bgColor.value = '#fff'
-  //     break
-  //   default:
-  // bgColor.value = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-  // }
-}
+const route = useRoute()
+const year = new Date().getFullYear()
 </script>
-<style lang="scss">
-html,
-body {
-  height: 100%;
+
+<style scoped>
+.page-enter-active,
+.page-leave-active {
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
 }
 
-#app {
-  position: relative;
-  min-height: 100vh;
-
-  display: grid;
-  grid-template-rows: 92px auto;
-
-  // background: linear-gradient(to right bottom, #108156, #108156);
-
-  font-family: 'Nunito', sans-serif;
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(8px);
 }
 
-.custom-scrollbar {
-  /* Firefox */
-  scrollbar-width: thin;
-  scrollbar-color: #7a3306 #fff;
-
-  /* Webkit */
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: #fff;
-    border-radius: 3px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: #7a3306;
-    border-radius: 3px;
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background: #7a3306;
-  }
-
-  &::-webkit-scrollbar-thumb:active {
-    background: #7a3306;
-  }
-}
-
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #fff;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #7a3306;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #7a3306;
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
 }
 </style>

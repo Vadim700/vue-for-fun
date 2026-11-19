@@ -1,21 +1,23 @@
-import { defineStore } from 'pinia';
+import { defineStore } from 'pinia'
 
 export const useMainStore = defineStore('mainStore', {
   state: () => ({
-    topic: localStorage.getItem('topic') || ''
+    topic: '',
   }),
 
-
   getters: {
-    getTopic: (state) => state.topic
+    getTopic: (state) => state.topic,
   },
-
 
   actions: {
     setTopic(payload) {
-      this.topic = payload.toLowerCase();
-      localStorage.setItem('topic', payload.toLowerCase())
-    }
+      this.topic = String(payload ?? '').toLowerCase()
+    },
+  },
+
+  // Persistence is handled by pinia-plugin-persistedstate,
+  // not by manual calls inside the action
+  persist: {
+    key: 'vue-for-fun:main',
   },
 })
-

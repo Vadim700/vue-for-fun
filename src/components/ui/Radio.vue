@@ -18,7 +18,7 @@ import { computed } from 'vue'
 
 const uniqId = computed(() => crypto.randomUUID())
 
-const props = defineProps({
+defineProps({
   title: {
     type: String,
     default: '',

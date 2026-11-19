@@ -16,7 +16,6 @@ var Application = (function () {
   var pix
   var WIDTH
   var HEIGHT
-  var flickerInterval
   var init = function () {
     canvas = document.getElementById('canvas')
     ctx = canvas.getContext('2d')
@@ -27,7 +26,7 @@ var Application = (function () {
     ctx.fill()
     imgData = ctx.getImageData(0, 0, WIDTH, HEIGHT)
     pix = imgData.data
-    flickerInterval = setInterval(flickering, 30)
+    setInterval(flickering, 30)
   }
   var flickering = function () {
     for (var i = 0; i < pix.length; i += 4) {

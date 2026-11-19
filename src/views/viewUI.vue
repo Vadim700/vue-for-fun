@@ -1,118 +1,94 @@
 <template>
-  <div class="grid grid-cols-4 gap-8">
+  <div class="grid grid-cols-1 gap-6 lg:grid-cols-[210px_minmax(0,1fr)]">
     <Aside :links="links" />
-    <div
-      class="grid col-span-3"
-      :class="{ 'grid-rows-[300px_1fr]': !isUiPage, 'grid-rows-[auto_1fr_4fr': isUiPage }"
-    >
-      <h1 v-if="isUiPage" class="text-4xl my-6 text-center text-red-800 uppercase font-bold">
-        Reusable component library
-      </h1>
 
-      <div v-if="isUiPage" class="grid grid-cols-3 grid-rows-2 gap-3 mx-auto">
-        <RouterLink
-          to="/ui/tooltip"
-          class="grid grid-rows-[1fr_auto_auto] border rounded-xl aspect-square p-2 text-center"
-        >
-          <Tooltip class="pt-10" :title="'Helper text'" :active="true" />
-          <h3 class="text-2xl">Tooltip</h3>
-          <span class="text-lg">Container</span>
-        </RouterLink>
+    <div class="min-w-0">
+      <template v-if="isUiPage">
+        <header class="text-center">
+          <p class="eyebrow">UI Kit</p>
+          <h1 class="page-title mt-2">Reusable components</h1>
+          <p class="page-subtitle mx-auto">
+            A small component library: preview each one live and grab its HTML/CSS from the tabs
+            below.
+          </p>
+        </header>
 
-        <RouterLink
-          to="/ui/elements"
-          class="grid grid-rows-[1fr_auto_auto] border rounded-xl aspect-square p-2 text-center"
-        >
-          <div class="grid grid-rows-3 grid-cols-2 grid-flow-col m-auto gap-x-8 gap-y-4">
-            <Radio :title="'Default'" />
-            <Radio :title="'Selected'" :checked="true" />
-            <Radio :title="'Desabled'" :disabled="true" />
-            <Checkbox :title="'Default'" />
-            <Checkbox :title="'Checked'" :checked="true" />
-            <Checkbox :title="'Disabled'" :disabled="true" :checked="true" />
-          </div>
-          <h3 class="text-2xl">Form Elements</h3>
-          <span class="text-lg">Element</span>
-        </RouterLink>
+        <div class="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <RouterLink
+            v-for="item in previews"
+            :key="item.to"
+            :to="item.to"
+            class="group border-ink/5 shadow-card hover:shadow-float hover:border-brand/20 flex flex-col rounded-2xl border bg-white p-4 text-center transition duration-300 hover:-translate-y-1"
+          >
+            <div class="flex flex-1 items-center justify-center py-6">
+              <component :is="item.component" v-bind="item.props" />
+            </div>
+            <h3 class="group-hover:text-brand text-xl font-extrabold transition-colors">
+              {{ item.title }}
+            </h3>
+            <span class="text-ink-soft text-sm">{{ item.kind }}</span>
+          </RouterLink>
 
-        <RouterLink
-          to="/ui/calendar"
-          class="grid grid-rows-[1fr_auto_auto] border rounded-xl aspect-square p-2 text-center"
-        >
-          <Calendar :preview="true" class="m-auto" />
-          <h3 class="text-2xl">Calendar</h3>
-          <span class="text-lg">Container</span>
-        </RouterLink>
+          <RouterLink
+            to="/ui/elements"
+            class="group border-ink/5 shadow-card hover:shadow-float hover:border-brand/20 flex flex-col rounded-2xl border bg-white p-4 text-center transition duration-300 hover:-translate-y-1"
+          >
+            <div class="grid flex-1 grid-cols-2 content-center gap-x-4 gap-y-3 py-6 text-left">
+              <Radio title="Default" />
+              <Radio title="Selected" :checked="true" />
+              <Checkbox title="Default" />
+              <Checkbox title="Checked" :checked="true" />
+              <Switcher :size="40" />
+              <Switcher :size="40" :checked="true" />
+            </div>
+            <h3 class="group-hover:text-brand text-xl font-extrabold transition-colors">
+              Form Elements
+            </h3>
+            <span class="text-ink-soft text-sm">Element</span>
+          </RouterLink>
 
-        <RouterLink
-          to="/ui/modal"
-          class="grid grid-rows-[1fr_auto_auto] border rounded-xl aspect-square p-2 text-center"
-        >
-          <div
-            class="p-6 relative before:absolute before:w-full before:h-full before:bg-gray-900 before:left-0 before:top-0 before:opacity-50 select-none"
+          <RouterLink
+            to="/ui/modal"
+            class="group border-ink/5 shadow-card hover:shadow-float hover:border-brand/20 flex flex-col rounded-2xl border bg-white p-4 text-center transition duration-300 hover:-translate-y-1"
           >
             <div
-              class="bg-white absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 px-8 py-4 rounded-md"
+              class="flex flex-1 items-center justify-center rounded-xl bg-slate-900/10 p-6"
+              aria-hidden="true"
             >
-              <form action="#" @submit.prevent>
-                <div class="mb-2 grid grid-rows-2">
-                  <label for="name" class="uppercase text-left">Name</label>
-                  <input type="text" id="name" class="border border-zinc-400 rounded-sm" />
-                </div>
-                <div class="mb-2 grid grid-rows-2">
-                  <label for="mail" class="uppercase text-left">Email</label>
-                  <input type="text" id="mail" class="border border-zinc-400 rounded-sm" />
-                </div>
-                <button
-                  @click="openModal = false"
-                  class="uppercase bg-blue-400 px-10 py-2 text-md text-white w-full rounded-sm hover:bg-blue-500 cursor-pointer transition-colors"
-                >
-                  Submit
-                </button>
-              </form>
+              <div class="w-full max-w-[170px] rounded-lg bg-white p-3 text-left shadow-lg">
+                <div class="mx-auto mb-2 h-2 w-16 rounded bg-zinc-200"></div>
+                <div class="mb-2 h-5 rounded border border-zinc-300"></div>
+                <div class="mb-2 h-5 rounded border border-zinc-300"></div>
+                <div class="h-5 rounded bg-blue-400"></div>
+              </div>
             </div>
-          </div>
-          <h3 class="text-2xl">Modal</h3>
-          <span class="text-lg">Container</span>
-        </RouterLink>
+            <h3 class="group-hover:text-brand mt-2 text-xl font-extrabold transition-colors">
+              Modal
+            </h3>
+            <span class="text-ink-soft text-sm">Container</span>
+          </RouterLink>
+        </div>
+      </template>
 
-        <RouterLink
-          to="/ui/histogram"
-          class="grid grid-rows-[1fr_auto_auto] border rounded-xl aspect-square p-2 text-center"
-        >
-          <Histogram />
-          <h3 class="text-2xl">Histogram</h3>
-          <span class="text-lg">Container</span>
-        </RouterLink>
-
-        <RouterLink
-          to="/ui/avatar"
-          class="grid grid-rows-[1fr_auto_auto] border rounded-xl aspect-square p-2 text-center"
-        >
-        <Avatar class="m-auto"/>
-          <h3 class="text-2xl">Avatar</h3>
-          <span class="text-lg">Container</span>
-        </RouterLink>
-      </div>
-
-      <RouterView></RouterView>
+      <RouterView v-else />
     </div>
   </div>
 </template>
 
 <script setup>
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 import Tooltip from '@/components/ui/Tooltip.vue'
-import Aside from '../components/vAside.vue'
-import { ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import Aside from '@/components/vAside.vue'
 import Checkbox from '@/components/ui/Checkbox.vue'
 import Radio from '@/components/ui/Radio.vue'
+import Switcher from '@/components/ui/Switcher.vue'
 import Calendar from '@/components/shared/Calendar.vue'
 import Histogram from '@/components/shared/Histogram.vue'
 import Avatar from '@/components/shared/Avatar.vue'
 
-const router = useRouter()
-const isUiPage = ref(router.currentRoute.value.path === '/ui')
+const route = useRoute()
+const isUiPage = computed(() => route.path === '/ui')
 
 const links = [
   { path: '/ui/tooltip', label: 'tooltip' },
@@ -123,12 +99,34 @@ const links = [
   { path: '/ui/avatar', label: 'avatar' },
 ]
 
-// Следим за изменением URL
-watch(
-  () => router.currentRoute.value.path,
-  (newPath) => {
-    isUiPage.value = newPath === '/ui'
+const previews = [
+  {
+    to: '/ui/tooltip',
+    title: 'Tooltip',
+    kind: 'Container',
+    component: Tooltip,
+    props: { title: 'Helper text', active: true },
   },
-  { immediate: true },
-)
+  {
+    to: '/ui/calendar',
+    title: 'Calendar',
+    kind: 'Container',
+    component: Calendar,
+    props: { preview: true },
+  },
+  {
+    to: '/ui/histogram',
+    title: 'Histogram',
+    kind: 'Container',
+    component: Histogram,
+    props: {},
+  },
+  {
+    to: '/ui/avatar',
+    title: 'Avatar',
+    kind: 'Element',
+    component: Avatar,
+    props: {},
+  },
+]
 </script>

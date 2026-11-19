@@ -1,86 +1,57 @@
 <template>
-  <h1 class="text-4xl my-6 text-center text-red-800 uppercase font-bold">BG's on css</h1>
-  <div class="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4">
-    <div
-      v-for="item of bgs"
-      :key="item.id"
-      v-bind="getDataAttributes(item)"
-      class="aspect-video rounded-sm cursor-pointer"
-      @click="handleClick"
-    ></div>
-  </div>
+  <section>
+    <header class="mb-6 flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <p class="eyebrow">Only CSS</p>
+        <h1 class="page-title mt-2">CSS backgrounds</h1>
+        <p class="page-subtitle">
+          48 gradient patterns. Click a tile to open the ready-to-copy CSS on the right.
+        </p>
+      </div>
+      <span class="chip">{{ bgs.length }} patterns</span>
+    </header>
+
+    <div class="grid grid-cols-[repeat(auto-fill,minmax(170px,1fr))] gap-3">
+      <button
+        v-for="(item, index) in bgs"
+        :key="item.id"
+        type="button"
+        v-bind="getDataAttributes(item)"
+        class="bg-tile aspect-video cursor-pointer rounded-xl"
+        :aria-label="`CSS background ${index + 1}`"
+        @click="handleClick"
+      ></button>
+    </div>
+  </section>
 </template>
 
 <script setup>
 import { useBgStore } from '@/stores/bgs'
-import { formatObjectToCSS } from '../../use/useFormatObjectToCss'
 
 const store = useBgStore()
 
-const handleClick = (e) => {
-  const styles = window.getComputedStyle(e.target, '::after')
-
-  store.setCurrentItem(styles)
-}
-
-const bgs = Array.from(Array(48)).map((_, i) => ({ id: i }))
+const bgs = Array.from({ length: 48 }, (_, i) => ({ id: i }))
 
 const getDataAttributes = (item) => ({
+  'data-bg-tile': '',
   [`data-bg-${item.id}`]: '',
 })
+
+const handleClick = (event) => {
+  const styles = window.getComputedStyle(event.currentTarget, '::after')
+  store.setCurrentItem(styles)
+}
 </script>
 
 <style lang="scss" scoped>
-[data-bg-0],
-[data-bg-1],
-[data-bg-2],
-[data-bg-3],
-[data-bg-4],
-[data-bg-5],
-[data-bg-6],
-[data-bg-7],
-[data-bg-8],
-[data-bg-9],
-[data-bg-10],
-[data-bg-11],
-[data-bg-12],
-[data-bg-13],
-[data-bg-14],
-[data-bg-15],
-[data-bg-16],
-[data-bg-17],
-[data-bg-18],
-[data-bg-19],
-[data-bg-20],
-[data-bg-21],
-[data-bg-22],
-[data-bg-23],
-[data-bg-24],
-[data-bg-25],
-[data-bg-26],
-[data-bg-27],
-[data-bg-28],
-[data-bg-29],
-[data-bg-30],
-[data-bg-31],
-[data-bg-32],
-[data-bg-33],
-[data-bg-34],
-[data-bg-35],
-[data-bg-36],
-[data-bg-37],
-[data-bg-38],
-[data-bg-39],
-[data-bg-40],
-[data-bg-41],
-[data-bg-42],
-[data-bg-43],
-[data-bg-44],
-[data-bg-45],
-[data-bg-46],
-[data-bg-47] {
+[data-bg-tile] {
   position: relative;
   overflow: hidden;
+
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
 
   &:hover {
     &::after {
@@ -90,7 +61,9 @@ const getDataAttributes = (item) => ({
 
   &::after {
     content: '';
-    transition: all 0.5s;
+    transition:
+      transform 0.5s ease,
+      opacity 0.5s ease;
     position: absolute;
     width: 100%;
     height: 100%;

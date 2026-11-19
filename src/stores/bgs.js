@@ -1,31 +1,28 @@
-import postsService from '@/services/postsService';
-import { defineStore } from 'pinia';
+import { defineStore } from 'pinia'
 
 export const useBgStore = defineStore('bgsStore', {
   state: () => ({
     bgs: [],
-    bg: {}
+    bg: {},
   }),
 
-
   getters: {
-    getCurrent: (state) => {
-      return state.bg
-    }
+    getCurrent: (state) => state.bg,
   },
-
 
   actions: {
-    setCurrentItem(el) {
+    setCurrentItem(styles) {
       this.bg = {
-        background: el.background,
-        backgroundSize: el.backgroundSize,
-        backgroundColor: el.backgroundColor,
-        backgroundImage: el.backgroundImage,
-        backgroundPosition: el.backgroundPosition
+        background: styles.background,
+        backgroundSize: styles.backgroundSize,
+        backgroundColor: styles.backgroundColor,
+        backgroundImage: styles.backgroundImage,
+        backgroundPosition: styles.backgroundPosition,
       }
-    }
+    },
   },
 
-  repsist: true
+  persist: {
+    key: 'vue-for-fun:bg',
+  },
 })

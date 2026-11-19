@@ -42,18 +42,16 @@
 </template>
 
 <script setup>
-import { usePostsStore } from '@/stores/todos'
 import { useField, useForm } from 'vee-validate'
 import * as yup from 'yup'
-
-const postsStore = usePostsStore()
 
 const schema = yup.object({
   title: yup.string().required().min(3),
   body: yup.string().required().min(6),
 })
 
-const emit = defineEmits(['close'])
+// The component knows nothing about stores: it emits the data upwards
+const emit = defineEmits(['close', 'submit'])
 
 const { handleSubmit, errors } = useForm({
   validationSchema: schema,
@@ -63,7 +61,7 @@ const { value: title } = useField('title')
 const { value: body } = useField('body')
 
 const handleFormSubmit = handleSubmit((values) => {
-  postsStore.addPost(values)
+  emit('submit', values)
 
   title.value = ''
   body.value = ''

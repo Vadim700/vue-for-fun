@@ -1,28 +1,28 @@
-import { animate, MotionValue, useMotionValue } from "motion-v";
-import { onMounted } from "vue";
+import { animate, useMotionValue } from 'motion-v'
+import { onMounted } from 'vue'
 
-const inactiveShadow = "0px 0px 0px rgba(0,0,0,0.8)";
+const inactiveShadow = '0px 0px 0px rgba(0,0,0,0.8)'
 
 export function useRaisedShadow(value) {
-  const boxShadow = useMotionValue(inactiveShadow);
+  const boxShadow = useMotionValue(inactiveShadow)
 
   onMounted(() => {
-    let isActive = false;
-    value.on("change", (latest) => {
-      const wasActive = isActive;
+    let isActive = false
+    value.on('change', (latest) => {
+      const wasActive = isActive
       if (latest !== 0) {
-        isActive = true;
+        isActive = true
         if (isActive !== wasActive) {
-          animate(boxShadow, "5px 5px 10px rgba(0,0,0,0.3)");
+          animate(boxShadow, '5px 5px 10px rgba(0,0,0,0.3)')
         }
       } else {
-        isActive = false;
+        isActive = false
         if (isActive !== wasActive) {
-          animate(boxShadow, inactiveShadow);
+          animate(boxShadow, inactiveShadow)
         }
       }
-    });
-  });
+    })
+  })
 
-  return boxShadow;
+  return boxShadow
 }

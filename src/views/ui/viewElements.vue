@@ -1,34 +1,61 @@
 <template>
-  <div class="items-center grid place-content-center">
-    <h2 class="text-3xl mb-20">Custom form elements</h2>
-    <div class="grid grid-rows-3 grid-cols-2 grid-flow-col gap-x-8 gap-y-4">
-      <Radio :title="'Default'" />
-      <Radio :title="'Selected'" :checked="true"/>
-      <Radio :title="'Desabled'" :disabled="true" />
-      <Checkbox :title="'Default'" />
-      <Checkbox :title="'Checked'" :checked="true" />
-      <Checkbox :title="'Disabled'" :disabled="true" :checked="true" />
-      <Switcher :size="52" :checked="false">
-        <template #right>
-          <span class="ml-2 hover:underline cursor-pointer">Off</span>
-        </template>
-      </Switcher>
+  <section>
+    <header class="mb-8">
+      <p class="eyebrow">UI · Element</p>
+      <h2 class="page-title mt-1 text-2xl sm:text-3xl">Form elements</h2>
+      <p class="page-subtitle">
+        Custom radios, checkboxes and switches: native inputs inside labels, all state handled by
+        CSS.
+      </p>
+    </header>
 
-      <Switcher :size="52" :checked="true">
-        <template #right>
-          <span class="ml-2 hover:underline cursor-pointer">On</span>
-        </template>
-      </Switcher>
+    <div class="card grid gap-8 px-6 py-8 sm:grid-cols-3">
+      <div>
+        <h3 class="text-ink-soft mb-4 text-xs font-extrabold tracking-widest uppercase">Radio</h3>
+        <div class="grid gap-4">
+          <Radio title="Default" />
+          <Radio title="Selected" :checked="true" />
+          <Radio title="Disabled" :disabled="true" />
+        </div>
+      </div>
 
-      <Switcher :disabled="true">
-        <template #right>
-          <span class="ml-2">Disabled</span>
-        </template>
-      </Switcher>
+      <div>
+        <h3 class="text-ink-soft mb-4 text-xs font-extrabold tracking-widest uppercase">
+          Checkbox
+        </h3>
+        <div class="grid gap-4">
+          <Checkbox title="Default" />
+          <Checkbox title="Checked" :checked="true" />
+          <Checkbox title="Disabled" :disabled="true" :checked="true" />
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-ink-soft mb-4 text-xs font-extrabold tracking-widest uppercase">
+          Switcher
+        </h3>
+        <div class="grid gap-4">
+          <Switcher :size="48">
+            <template #right>
+              <span class="text-ink-soft ml-2 text-sm font-semibold">Off</span>
+            </template>
+          </Switcher>
+          <Switcher :size="48" :checked="true">
+            <template #right>
+              <span class="text-ink-soft ml-2 text-sm font-semibold">On</span>
+            </template>
+          </Switcher>
+          <Switcher :disabled="true">
+            <template #right>
+              <span class="text-ink-soft ml-2 text-sm font-semibold">Disabled</span>
+            </template>
+          </Switcher>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <Tabs :html :css />
+    <Tabs :html :css />
+  </section>
 </template>
 
 <script setup>
@@ -66,6 +93,7 @@ const html = `
   </div>
 </label>
 `
+
 const css = `
 .checkbox {
 	display: inline-block;
@@ -98,34 +126,30 @@ const css = `
 	display: none;
 }
 .checkbox__label {
-	font-family: 'Inter';
-	font-style: normal;
 	font-weight: 400;
 	font-size: 16px;
 	line-height: 1.5;
 	color: var(--grey-4);
 	user-select: none;
 }
-.checkbox__input:checked~.checkbox__state .checkbox__icon {
+.checkbox__input:checked ~ .checkbox__state .checkbox__icon {
 	display: block;
 }
-.checkbox__input:checked~.checkbox__state .checkbox__control {
+.checkbox__input:checked ~ .checkbox__state .checkbox__control {
 	background: var(--blue);
 	border: 1px solid var(--blue);
 }
-.checkbox__input:focus~.checkbox__state .checkbox__label {
+.checkbox__input:focus ~ .checkbox__state .checkbox__label {
 	text-decoration: underline;
 }
-.checkbox__input:disabled~.checkbox__state .checkbox__control {
+.checkbox__input:disabled ~ .checkbox__state .checkbox__control {
 	background: var(--grey-2);
 }
-.checkbox__input:disabled~.checkbox__state .checkbox__label {
+.checkbox__input:disabled ~ .checkbox__state .checkbox__label {
 	color: var(--grey-2);
 }
-.checkbox__input:disabled~.checkbox__state {
+.checkbox__input:disabled ~ .checkbox__state {
 	cursor: default;
 }
 `
 </script>
-
-<style scoped lang="scss"></style>

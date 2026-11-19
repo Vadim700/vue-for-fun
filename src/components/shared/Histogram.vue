@@ -46,6 +46,7 @@
 
 <style scoped lang="scss">
 .histogram {
+  width: 100%;
   padding: 16px 24px 24px 24px;
   border-radius: 8px;
   background: var(--white);

@@ -1,82 +1,158 @@
 <template>
-  <div class="h-full relative">
-    <Aside :links="links" class="fixed" />
-    <div class="overflow-auto pl-60">
-      <RouterView></RouterView>
+  <div>
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-[210px_minmax(0,1fr)]">
+      <Aside :links="links" />
+      <div class="min-w-0">
+        <RouterView />
+      </div>
     </div>
-    <AnimatePresence>
-      <Motion
-        v-if="openSide"
-        :initial="{ x: 450 }"
-        :animate="{ x: -50 }"
-        :exit="{ x: 450 }"
-        :transition="{ duration: 0.2 }"
-        class="bg-amber-100 backdrop-blur-sm h-full fixed top-0 -right-[50px] py-10 pt-20 px-8 w-[30%] z-10 overflow-auto"
-        :style="bg"
-        v-highlight
-      >
-        <button
-          class="cursor-pointer absolute top-4 right-4 hover:text-red-500 z-3 grid place-content-center w-12 h-12 rounded-full bg-white"
-          @click="openSide = false"
+
+    <Teleport to="body">
+      <Transition name="drawer">
+        <div
+          v-if="openSide"
+          class="fixed inset-0 z-50 flex justify-end bg-black/45 backdrop-blur-[2px]"
+          role="presentation"
+          @click.self="openSide = false"
         >
-          <X size="36" />
-        </button>
-        <pre class="relative bg-white rounded-lg p-4 pt-12 wrap-anywhere whitespace-normal text-sm">
-          <button
-            @click="copyToClipboard"
-            class="absolute top-4 right-4 bg-amber-700 hover:bg-amber-800 text-white rounded-sm p-2 py-1 uppercase cursor-pointer transition-colors flex items-center gap-2"
-            :class="{ 'bg-green-600 hover:bg-green-700': isCopied }"
-            :title="isCopied ? 'Скопировано' : 'Копировать'"
+          <aside
+            class="flex h-full w-full max-w-[460px] flex-col bg-[#17181c] text-stone-100 shadow-2xl"
+            role="dialog"
+            aria-modal="true"
+            aria-label="CSS code for the selected background"
           >
-            <Copy v-if="!isCopied" :size="16" />
-            <Check v-else :size="16" />
-            <span>{{ isCopied ? 'Copied!' : 'Copy' }}</span>
-          </button>
-          <code class="js rounded-md">{{ bg }}</code>
-        </pre>
-        <Motion
-          v-if="showNotification"
-          :initial="{ opacity: 0, y: 10 }"
-          :animate="{ opacity: 1, y: 0 }"
-          :exit="{ opacity: 0, y: 10 }"
-          class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg"
-        >
-          Copied to the clipboard
-        </Motion>
-      </Motion>
-    </AnimatePresence>
+            <header
+              class="flex items-start justify-between gap-4 border-b border-white/10 px-5 py-4"
+            >
+              <div>
+                <p class="text-[10px] font-extrabold tracking-[0.22em] text-amber-400 uppercase">
+                  CSS background
+                </p>
+                <h2 class="mt-1 text-lg font-extrabold">Ready to copy</h2>
+              </div>
+
+              <button
+                type="button"
+                class="grid h-9 w-9 place-content-center rounded-full text-white/70 transition hover:bg-white/10 hover:text-white"
+                aria-label="Close panel"
+                @click="openSide = false"
+              >
+                <X :size="20" />
+              </button>
+            </header>
+
+            <div class="flex-1 space-y-4 overflow-auto p-4">
+              <div
+                class="h-24 rounded-xl border border-white/10"
+                :style="store.bg"
+                aria-hidden="true"
+              ></div>
+
+              <pre
+                class="overflow-x-auto rounded-xl bg-white p-4 text-[12.5px] leading-relaxed text-slate-800"
+              ><code class="hljs language-css" v-html="highlighted"></code></pre>
+            </div>
+
+            <footer class="border-t border-white/10 p-4">
+              <button
+                type="button"
+                class="bg-accent text-brand hover:bg-accent/90 inline-flex w-full items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold transition"
+                @click="copyToClipboard"
+              >
+                <Check v-if="isCopied" :size="16" />
+                <Copy v-else :size="16" />
+                {{ isCopied ? 'Copied' : 'Copy CSS' }}
+              </button>
+            </footer>
+          </aside>
+        </div>
+      </Transition>
+    </Teleport>
+
+    <Transition name="toast">
+      <p
+        v-if="showNotification"
+        class="toast fixed bottom-6 left-1/2 z-[60] rounded-full bg-emerald-500 px-5 py-2.5 text-sm font-bold text-white shadow-2xl"
+        role="status"
+      >
+        CSS copied to clipboard
+      </p>
+    </Transition>
   </div>
 </template>
 
 <script setup>
-import { watch, ref, onUnmounted, onMounted } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import Aside from '@/components/vAside.vue'
-import { useRouter } from 'vue-router'
-import { Motion, AnimatePresence } from 'motion-v'
 import { useBgStore } from '@/stores/bgs'
-import { X, Copy, Check } from 'lucide-vue-next'
-import { formatObjectToCSS } from '../use/useFormatObjectToCss'
+import { Check, Copy, X } from 'lucide-vue-next'
+import { formatObjectToCSS } from '@/use/useFormatObjectToCss'
+import { escapeCode, highlightToHtml } from '@/lib/highlight'
 
-const router = useRouter()
 const store = useBgStore()
 
-let openSide = ref(false)
-const bg = ref(store.bg)
+const openSide = ref(false)
+const highlighted = ref('')
 const isCopied = ref(false)
 const showNotification = ref(false)
+
 let copyTimeout = null
+let highlightToken = 0
 
-// Функция для копирования в буфер обмена
+const cssText = computed(() => formatObjectToCSS(store.bg))
+
+const links = [
+  { path: '/onlycss/bgs', label: "BG's" },
+  { path: '/onlycss/slider', label: 'Slider' },
+  { path: '/onlycss/scroll', label: 'scroll' },
+]
+
+// A tile click updates the store — open the panel
+watch(
+  () => store.bg,
+  () => {
+    openSide.value = true
+  },
+)
+
+// Panel is open — highlight the current CSS
+watch(
+  [openSide, () => store.bg],
+  async ([isOpen]) => {
+    if (!isOpen) return
+
+    const token = ++highlightToken
+    const code = cssText.value
+
+    isCopied.value = false
+    highlighted.value = escapeCode(code)
+
+    const result = await highlightToHtml(code, 'css')
+    if (token === highlightToken) highlighted.value = result || escapeCode(code)
+  },
+  { immediate: true },
+)
+
+watch(openSide, (isOpen) => {
+  document.body.style.overflow = isOpen ? 'hidden' : ''
+})
+
 const copyToClipboard = async () => {
+  if (!cssText.value) return
+
   try {
-    const cssText = formatObjectToCSS(bg.value)
-
-    if (!cssText) {
-      console.warn('Нет CSS стилей для копирования')
-      return
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(cssText.value)
+    } else {
+      const textarea = document.createElement('textarea')
+      textarea.value = cssText.value
+      textarea.style.position = 'fixed'
+      textarea.style.opacity = '0'
+      document.body.appendChild(textarea)
+      textarea.select()
+      document.execCommand('copy')
+      textarea.remove()
     }
-
-    await navigator.clipboard.writeText(cssText)
 
     isCopied.value = true
     showNotification.value = true
@@ -86,60 +162,64 @@ const copyToClipboard = async () => {
       isCopied.value = false
       showNotification.value = false
     }, 2000)
-  } catch (err) {
-    console.error('Ошибка копирования: ', err)
+  } catch (error) {
+    console.error('Failed to copy CSS', error)
   }
 }
 
-watch(
-  () => store.bg,
-  (newCurrent) => {
-    if (newCurrent) {
-      openSide.value = true
-      bg.value = newCurrent
-      isCopied.value = false
-    }
-  },
-)
+const handleKeydown = (event) => {
+  if (event.key === 'Escape' && openSide.value) openSide.value = false
+}
 
-const links = [
-  {
-    path: '/onlycss/bgs',
-    label: "BG's",
-  },
-  {
-    path: '/onlycss/slider',
-    label: 'Slider',
-  },
-  {
-    path: '/onlycss/scroll',
-    label: 'scroll',
-  },
-]
+onMounted(() => document.addEventListener('keydown', handleKeydown))
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
+  document.removeEventListener('keydown', handleKeydown)
   clearTimeout(copyTimeout)
+  document.body.style.overflow = ''
 })
-
-router.push({ path: '/onlycss/bgs' })
 </script>
 
 <style scoped>
-.wrap-anywhere {
-  overflow-wrap: anywhere;
+.drawer-enter-active,
+.drawer-leave-active {
+  transition: opacity 0.2s ease;
 }
 
-.notification-enter-active,
-.notification-leave-active {
-  transition: all 0.3s ease;
+.drawer-enter-active aside,
+.drawer-leave-active aside {
+  transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.3, 1);
 }
 
-.notification-enter-from,
-.notification-leave-to {
+.drawer-enter-from,
+.drawer-leave-to {
   opacity: 0;
-  transform: translateY(10px);
 }
 
-.test {
+.drawer-enter-from aside,
+.drawer-leave-to aside {
+  transform: translateX(100%);
+}
+
+.toast {
+  transform: translateX(-50%);
+}
+
+.toast-enter-active,
+.toast-leave-active {
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.toast-enter-from,
+.toast-leave-to {
+  opacity: 0;
+  transform: translate(-50%, 10px);
+}
+
+.toast-enter-to,
+.toast-leave-from {
+  transform: translateX(-50%);
 }
 </style>
