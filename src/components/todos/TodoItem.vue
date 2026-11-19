@@ -16,11 +16,7 @@
 </template>
 
 <script setup>
-import { useTodoStore } from '@/stores/todos'
-
-const store = useTodoStore()
-
-const props = defineProps({
+defineProps({
   todo: {
     type: Object,
     required: true,

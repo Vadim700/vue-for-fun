@@ -1,10 +1,17 @@
 <template>
-  <vContainer :width="1000">
-    <h1 class="text-4xl mb-2 flex gap-8 items-center justify-center text-white uppercase font-bold">
-      Instagram post template
-    </h1>
-    <span class="text-2xl w-full flex justify-center text-white mb-8">Plant Shop</span>
-    <PostsList />
+  <vContainer :width="1040">
+    <header class="text-center">
+      <p class="eyebrow">Instagram layout</p>
+      <h1 class="page-title mt-2 uppercase">Plant Shop</h1>
+      <p class="page-subtitle mx-auto">
+        Nine promo frames in a 6×2 grid. The active post expands to 2×2 while the rest glide into
+        place — no layout jumps.
+      </p>
+    </header>
+
+    <PostsList class="mt-8" />
+
+    <p class="text-ink-soft mt-4 text-center text-sm">Click any frame to make it active</p>
   </vContainer>
 </template>
 

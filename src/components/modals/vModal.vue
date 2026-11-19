@@ -1,78 +1,145 @@
 <template>
   <Teleport to="body">
-    <div
-      ref="modal"
-      v-if="open"
-      class="w-full h-full grid absolute z-5 top-0 left-0 before:absolute before:bg-black before:w-full before:h-full before:opacity-80 before:backdrop-blur-[5px]"
-      @click="handleOutsideClick"
-    >
-      <motion.div
-        :initial="{ opacity: 0, scale: 0.6, translateY: 50 }"
-        :animate="{ opacity: 1, scale: 1, translateY: 0 }"
-        :exit="{ opacity: 0, scale: 0.6 }"
-        :transition="{
-          duration: 0.2,
-          delay: 0,
-          ease: 'easeOut',
-        }"
+    <Transition name="modal">
+      <div
+        v-if="open"
+        class="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-[rgb(33_36_41/0.55)] p-4 backdrop-blur-[6px]"
+        role="presentation"
+        @click.self="close"
       >
         <div
-          class="border w-full max-w-[500px] min-w-[350px] absolute left-[50%] top-[50%] -translate-[50%] bg-white px-6 py-4 pt-8"
-          ref="modalInner"
-          @click.stop
+          ref="dialogRef"
+          role="dialog"
+          aria-modal="true"
+          :aria-label="ariaLabel"
+          class="modal-panel bg-paper relative w-full max-w-lg rounded-2xl p-6 shadow-2xl sm:p-8"
         >
           <button
-            class="absolute top-2 right-2 cursor-pointer hover:text-red-500"
-            @click="closeModal()"
+            type="button"
+            class="text-ink-soft hover:bg-ink/5 hover:text-brand absolute top-4 right-4 grid h-9 w-9 place-content-center rounded-full transition"
+            aria-label="Close"
+            @click="close"
           >
-            <X />
+            <X :size="18" />
           </button>
-          <h3 class="text-3xl text-center mb-4">
-            <slot name="header"></slot>
+
+          <h3 v-if="$slots.header" class="mb-5 pr-10 text-2xl font-extrabold">
+            <slot name="header" />
           </h3>
-          <slot></slot>
-          <slot name="footer"></slot>
+
+          <slot />
+          <slot name="footer" />
         </div>
-      </motion.div>
-    </div>
+      </div>
+    </Transition>
   </Teleport>
 </template>
 
 <script setup>
+import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { X } from 'lucide-vue-next'
-import { onMounted, onUnmounted, ref } from 'vue'
-import { motion } from 'motion-v'
 
-// const props = defineProps(['open'])
-const emit = defineEmits(['close'])
-const modalInner = ref(null)
 const props = defineProps({
-  open: Boolean,
+  open: {
+    type: Boolean,
+    default: false,
+  },
+  ariaLabel: {
+    type: String,
+    default: 'Dialog',
+  },
 })
 
-const handleOutsideClick = (event) => {
-  if (event.target === event.currentTarget) {
-    closeModal()
-  }
-}
+const emit = defineEmits(['close'])
+
+const dialogRef = ref(null)
+const previouslyFocused = ref(null)
+let previousOverflow = ''
+
+const close = () => emit('close')
+
+watch(
+  () => props.open,
+  async (isOpen) => {
+    if (isOpen) {
+      previouslyFocused.value = document.activeElement
+      previousOverflow = document.body.style.overflow
+      document.body.style.overflow = 'hidden'
+
+      await nextTick()
+      const field = dialogRef.value?.querySelector(
+        'input:not([disabled]), textarea:not([disabled]), select:not([disabled])',
+      )
+      const fallback = dialogRef.value?.querySelector('button:not([disabled]), a[href]')
+      ;(field ?? fallback)?.focus()
+    } else {
+      document.body.style.overflow = previousOverflow
+      previouslyFocused.value?.focus?.()
+    }
+  },
+)
 
 const handleKeydown = (event) => {
-  if (event.key === 'Escape' && props.open) {
-    closeModal()
-  }
-}
+  if (!props.open) return
 
-const closeModal = () => {
-  emit('close')
+  if (event.key === 'Escape') {
+    event.preventDefault()
+    close()
+    return
+  }
+
+  if (event.key !== 'Tab') return
+
+  // Keep focus inside the dialog
+  const focusable = Array.from(
+    dialogRef.value?.querySelectorAll(
+      'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    ) ?? [],
+  ).filter((element) => element.offsetParent !== null)
+
+  if (!focusable.length) return
+
+  const first = focusable[0]
+  const last = focusable[focusable.length - 1]
+
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault()
+    last.focus()
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault()
+    first.focus()
+  }
 }
 
 onMounted(() => document.addEventListener('keydown', handleKeydown))
 
-onUnmounted(() => document.removeEventListener('keydown', handleKeydown))
+onBeforeUnmount(() => {
+  document.removeEventListener('keydown', handleKeydown)
+  document.body.style.overflow = previousOverflow
+})
 </script>
 
-<style lang="scss" scoped>
-body {
-  overflow: hidden;
+<style scoped>
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.18s ease;
+}
+
+.modal-enter-active .modal-panel,
+.modal-leave-active .modal-panel {
+  transition:
+    transform 0.18s ease,
+    opacity 0.18s ease;
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-from .modal-panel,
+.modal-leave-to .modal-panel {
+  opacity: 0;
+  transform: translateY(12px) scale(0.97);
 }
 </style>

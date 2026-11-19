@@ -1,16 +1,25 @@
 <template>
-  <div>
-    <h2 class="text-3xl mb-4">histogram</h2>
+  <section>
+    <header class="mb-8">
+      <p class="eyebrow">UI · Container</p>
+      <h2 class="page-title mt-1 text-2xl sm:text-3xl">Histogram</h2>
+      <p class="page-subtitle">
+        A bar chart built on flexbox: heights are inline styles, so it is easy to wire up to real
+        data.
+      </p>
+    </header>
 
-    <Histogram />
-  </div>
+    <div class="card px-6 py-8">
+      <Histogram />
+    </div>
 
-  <Tabs :html :css />
+    <Tabs :html :css />
+  </section>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import Histogram from '@/components/shared/Histogram.vue'
-import Tabs from '@/components/shared/vTabs.vue';
+import Tabs from '@/components/shared/vTabs.vue'
 
 const html = `
 <div class="histogram">
@@ -25,55 +34,21 @@ const html = `
 		<div class="histogram__element" style="height: 100%;"></div>
 		<div class="histogram__element" style="height: 70%;"></div>
 		<div class="histogram__element" style="height: 44%;"></div>
-		<div class="histogram__element" style="height: 78%;"></div>
-		<div class="histogram__element" style="height: 44%;"></div>
-		<div class="histogram__element" style="height: 60%;"></div>
-		<div class="histogram__element" style="height: 78%;"></div>
-		<div class="histogram__element" style="height: 100%;"></div>
-		<div class="histogram__element" style="height: 22%;"></div>
-		<div class="histogram__element" style="height: 44%;"></div>
-		<div class="histogram__element" style="height: 60%;"></div>
-		<div class="histogram__element" style="height: 70%;"></div>
-		<div class="histogram__element" style="height: 22%;"></div>
-		<div class="histogram__element" style="height: 100%;"></div>
-		<div class="histogram__element" style="height: 22%;"></div>
-		<div class="histogram__element" style="height: 78%;"></div>
-		<div class="histogram__element" style="height: 60%;"></div>
-		<div class="histogram__element" style="height: 44%;"></div>
-		<div class="histogram__element" style="height: 70%;"></div>
-		<div class="histogram__element" style="height: 60%;"></div>
-		<div class="histogram__element" style="height: 22%;"></div>
-		<div class="histogram__element" style="height: 78%;"></div>
-		<div class="histogram__element" style="height: 70%;"></div>
-		<div class="histogram__element" style="height: 90%;"></div>
-		<div class="histogram__element" style="height: 60%;"></div>
-		<div class="histogram__element" style="height: 22%;"></div>
-		<div class="histogram__element" style="height: 60%;"></div>
-		<div class="histogram__element" style="height: 22%;"></div>
-		<div class="histogram__element" style="height: 70%;"></div>
-		<div class="histogram__element" style="height: 34%;"></div>
 	</div>
 </div>
 `
 
 const css = `
 .histogram {
-	padding: 16px 24px 24px 24px;
+	padding: 16px 24px 24px;
 	border-radius: 8px;
 	background: var(--white);
 	border: 1px solid var(--grey-3);
 	box-sizing: border-box;
-
-	font-family: 'Inter', sans-serif;
 	font-size: 16px;
 	font-weight: 400;
 	line-height: 1.5;
-	font-style: normal;
 	color: var(--black);
-}
-
-.histogram_preview {
-	width: 100%;
 }
 
 .histogram__header {
@@ -91,17 +66,15 @@ const css = `
 	margin-bottom: 6px;
 }
 
-.header__numbers {
+.histogram__numbers {
 	font-size: 20px;
 	line-height: 1.3;
-
 }
 
 .histogram__link {
 	color: var(--blue);
 	padding-top: 3px;
 	text-decoration: none;
-	height: auto;
 }
 
 .histogram__body {

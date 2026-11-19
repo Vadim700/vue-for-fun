@@ -1,92 +1,91 @@
 <template>
-  <div class="kanban-column">
-    <div class="column-header" :style="{ borderColor: color }">
+  <section class="kanban-column">
+    <header class="column-header" :style="{ '--accent': color }">
       <div class="header-content">
+        <span class="status-dot" aria-hidden="true"></span>
         <h3 class="column-title">{{ title }}</h3>
         <span class="task-count">{{ tasks.length }}</span>
       </div>
-      <button class="add-btn" @click="emit('addTask', status)" title="Add task">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <path
-            d="M10 4V16M4 10H16"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-          />
-        </svg>
+
+      <button type="button" class="add-btn" title="Add task" @click="emit('add-task', status)">
+        <Plus :size="16" />
       </button>
-    </div>
+    </header>
 
     <div
       class="column-content"
       :class="{ 'drag-over': isDragOver }"
-      @dragover="handleDragOver"
+      @dragover.prevent="handleDragOver"
       @dragleave="handleDragLeave"
       @drop="handleDrop"
     >
-      <Motion
-        v-for="task in sortedTasks"
+      <KanbanCard
+        v-for="task in tasks"
         :key="task.id"
-        :initial="{ opacity: 0, y: -20 }"
-        :animate="{ opacity: 1, y: 0 }"
-        :exit="{ opacity: 0, scale: 0.8 }"
-        :transition="{ duration: 0.3 }"
-      >
-        <KanbanCard :task="task" @delete="emit('delete', $event)" />
-      </Motion>
+        :task="task"
+        :color="color"
+        @delete="emit('delete', $event)"
+      />
 
-      <div v-if="tasks.length === 0" class="empty-state">No tasks yet</div>
+      <button
+        v-if="tasks.length === 0"
+        type="button"
+        class="empty-state"
+        @click="emit('add-task', status)"
+      >
+        <Plus :size="16" />
+        Add task
+      </button>
     </div>
-  </div>
+  </section>
 </template>
 
-<script setup lang="ts">
-import { ref, computed } from 'vue'
-import { Motion } from 'motion-v'
+<script setup>
+import { ref } from 'vue'
+import { Plus } from 'lucide-vue-next'
 import KanbanCard from './KanbanCard.vue'
 
-interface Task {
-  id: string
-  title: string
-  status: 'todo' | 'in_progress' | 'completed' | 'stop'
-  position: number
-}
+const props = defineProps({
+  title: {
+    type: String,
+    required: true,
+  },
+  status: {
+    type: String,
+    required: true,
+  },
+  tasks: {
+    type: Array,
+    default: () => [],
+  },
+  color: {
+    type: String,
+    default: '#3b82f6',
+  },
+})
 
-const props = defineProps<{
-  title: string
-  status: 'todo' | 'in_progress' | 'completed' | 'stop'
-  tasks: Task[]
-  color: string
-}>()
-
-const emit = defineEmits<{
-  drop: [taskId: string, fromStatus: string, toStatus: string]
-  delete: [id: string]
-  addTask: [status: string]
-}>()
+const emit = defineEmits(['drop', 'delete', 'add-task'])
 
 const isDragOver = ref(false)
 
-const sortedTasks = computed(() => {
-  return [...props.tasks].sort((a, b) => a.position - b.position)
-})
-
-const handleDragOver = (e: DragEvent) => {
-  e.preventDefault()
-  e.dataTransfer!.dropEffect = 'move'
+const handleDragOver = (event) => {
+  event.preventDefault()
+  event.dataTransfer.dropEffect = 'move'
   isDragOver.value = true
 }
 
-const handleDragLeave = () => {
+const handleDragLeave = (event) => {
+  // Keep the highlight when the pointer moves onto a child card
+  if (event.currentTarget.contains(event.relatedTarget)) return
   isDragOver.value = false
 }
 
-const handleDrop = (e: DragEvent) => {
-  e.preventDefault()
+const handleDrop = (event) => {
+  event.preventDefault()
   isDragOver.value = false
 
-  const taskId = e.dataTransfer!.getData('taskId')
-  const fromStatus = e.dataTransfer!.getData('fromStatus')
+  const taskId = event.dataTransfer.getData('taskId')
+  const fromStatus = event.dataTransfer.getData('fromStatus')
 
   if (taskId && fromStatus !== props.status) {
     emit('drop', taskId, fromStatus, props.status)
@@ -96,108 +95,121 @@ const handleDrop = (e: DragEvent) => {
 
 <style scoped>
 .kanban-column {
-  background: #f8f9fa;
-  border-radius: 12px;
-  padding: 16px;
-  flex: 1;
   display: flex;
   flex-direction: column;
-  height: 100%;
-
-  @media (width <= 1048px) {
-    min-width: 240px;
-  }
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid rgb(33 36 41 / 0.06);
+  border-radius: 16px;
+  background: rgb(255 255 255 / 0.72);
+  backdrop-filter: blur(6px);
 }
 
 .column-header {
-  border-left: 4px solid;
-  padding-left: 12px;
-  margin-bottom: 16px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding: 6px 4px 10px;
+  border-bottom: 1px solid rgb(33 36 41 / 0.08);
 }
 
 .header-content {
   display: flex;
   align-items: center;
   gap: 8px;
-  flex: 1;
+  min-width: 0;
+}
+
+.status-dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
 .column-title {
   margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: #1a1a1a;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #212429;
+  white-space: nowrap;
 }
 
 .task-count {
-  background: rgba(0, 0, 0, 0.06);
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 13px;
-  font-weight: 500;
-  color: #666;
+  padding: 1px 7px;
+  border-radius: 9999px;
+  background: rgb(33 36 41 / 0.07);
+  font-size: 11px;
+  font-weight: 800;
+  color: #495057;
 }
 
 .add-btn {
-  background: white;
-  border: 1px solid #e0e0e0;
-  padding: 6px;
-  border-radius: 6px;
+  display: grid;
+  flex-shrink: 0;
+  place-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgb(33 36 41 / 0.1);
+  border-radius: 10px;
+  background: #fff;
+  color: #495057;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #666;
-  transition: all 0.2s;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .add-btn:hover {
-  background: #f0f0f0;
-  border-color: #999;
-  color: #333;
-  transform: scale(1.05);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, white);
+  color: var(--accent);
 }
 
 .column-content {
+  display: flex;
   flex: 1;
-  overflow-y: auto;
-  padding: 4px;
-  min-height: 200px;
-  border-radius: 8px;
-  transition: background-color 0.2s;
+  flex-direction: column;
+  min-height: 180px;
+  padding: 6px;
+  border-radius: 12px;
+  transition: background-color 0.15s ease;
 }
 
 .column-content.drag-over {
-  background: rgba(0, 123, 255, 0.05);
-  outline: 2px dashed #007bff;
+  background: rgb(240 177 0 / 0.12);
+  outline: 2px dashed rgb(240 177 0 / 0.7);
   outline-offset: -4px;
 }
 
 .empty-state {
-  text-align: center;
-  color: #999;
-  font-size: 14px;
-  padding: 32px 16px;
-}
-
-.column-content::-webkit-scrollbar {
-  width: 6px;
-}
-
-.column-content::-webkit-scrollbar-track {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 140px;
+  border: 1px dashed rgb(33 36 41 / 0.15);
+  border-radius: 12px;
   background: transparent;
+  font-size: 13px;
+  font-weight: 700;
+  color: #90a0b7;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
 }
 
-.column-content::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 3px;
-}
-
-.column-content::-webkit-scrollbar-thumb:hover {
-  background: #999;
+.empty-state:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 </style>

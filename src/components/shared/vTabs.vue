@@ -1,119 +1,115 @@
 <template>
-  <section class="tabs w-full">
-    <div class="tabs__header flex gap-8 border-b border-zinc-300 pb-3">
+  <section class="mt-10 w-full">
+    <div class="border-ink/10 flex items-center gap-1 border-b" role="tablist">
       <button
-        ref="htmlBtn"
-        @click="setActiveTab($event)"
-        class="tabs__button uppercase cursor-pointer"
-        :class="{ 'text-red-500': activeTab === 'html' }"
+        v-for="tab in tabs"
+        :key="tab.id"
+        type="button"
+        role="tab"
+        class="tab-button"
+        :class="{ 'tab-button--active': activeTab === tab.id }"
+        :aria-selected="activeTab === tab.id"
+        @click="activeTab = tab.id"
       >
-        html
+        {{ tab.label }}
       </button>
-      <button
-        @click="setActiveTab($event)"
-        class="tabs__button uppercase cursor-pointer"
-        :class="{ 'text-red-500': activeTab === 'css' }"
-      >
-        css
-      </button>
-      <span
-        class="tabs__thumb"
-        :style="{ width: boundingClientRect.width + 'px', left: boundingClientRect.left + 'px' }"
-      >
-      </span>
     </div>
-    <div class="tabs__content py-4 overflow-auto">
-      <article v-if="activeTab === 'html'" ref="htmlBlock">
-        <pre><code v-html="escapedHtml"></code></pre>
-      </article>
-      <article v-else ref="cssBlock">
-        <pre><code v-html="escapedCss"></code></pre>
-      </article>
+
+    <div class="border-ink/5 mt-4 overflow-auto rounded-xl border bg-slate-50 p-4" role="tabpanel">
+      <pre
+        v-if="activeTab === 'html'"
+        class="text-[13px] leading-relaxed"
+      ><code class="hljs language-xml" v-html="highlightedHtml"></code></pre>
+      <pre
+        v-else
+        class="text-[13px] leading-relaxed"
+      ><code class="hljs language-css" v-html="highlightedCss"></code></pre>
     </div>
   </section>
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, ref } from 'vue'
-import hljs from 'highlight.js'
-import 'highlight.js/styles/github.css'
+import { onMounted, ref, watch } from 'vue'
+import { escapeCode, highlightToHtml } from '@/lib/highlight'
 
-const props = defineProps({ html: String, css: String })
-
-const activeTab = ref('html')
-const htmlBtn = ref(null)
-const boundingClientRect = ref({ width: 0, left: 0 })
-const htmlBlock = ref(null)
-const cssBlock = ref(null)
-
-const escapedHtml = computed(() => (props.html ? escapeCode(props.html) : ''))
-const escapedCss = computed(() => (props.css ? escapeCode(props.css) : ''))
-
-const setActiveTab = (e) => {
-  activeTab.value = e.currentTarget.textContent.trim()
-
-  const { clientWidth, offsetLeft } = e.currentTarget
-
-  updateUnderlinePosition(clientWidth, offsetLeft)
-  nextTick(() => highlightCode())
-}
-
-const updateUnderlinePosition = (width, left) => {
-  boundingClientRect.value.width = width
-  boundingClientRect.value.left = left
-}
-
-const highlightCode = () => {
-  if (htmlBlock.value) {
-    const codeElement = htmlBlock.value.querySelector('code')
-    if (codeElement) {
-      hljs.highlightElement(codeElement)
-    }
-  }
-
-  if (cssBlock.value) {
-    const codeElement = cssBlock.value.querySelector('code')
-    if (codeElement) {
-      hljs.highlightElement(codeElement)
-    }
-  }
-}
-
-onMounted(() => {
-  const width = htmlBtn.value.clientWidth
-  updateUnderlinePosition(width, 0)
-
-  nextTick(() => highlightCode())
+const props = defineProps({
+  html: {
+    type: String,
+    default: '',
+  },
+  css: {
+    type: String,
+    default: '',
+  },
 })
 
-const escapeCode = (text) => {
-  if (!text.trim()) return
+const tabs = [
+  { id: 'html', label: 'HTML' },
+  { id: 'css', label: 'CSS' },
+]
 
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;')
+const activeTab = ref('html')
+
+// Show escaped code immediately, then swap in the highlighted version once ready
+const highlightedHtml = ref(escapeCode(props.html))
+const highlightedCss = ref(escapeCode(props.css))
+
+let renderId = 0
+
+const render = async () => {
+  const currentId = ++renderId
+
+  const [html, css] = await Promise.all([
+    highlightToHtml(props.html, 'xml'),
+    highlightToHtml(props.css, 'css'),
+  ])
+
+  if (currentId !== renderId) return
+
+  highlightedHtml.value = html || escapeCode(props.html)
+  highlightedCss.value = css || escapeCode(props.css)
 }
+
+onMounted(render)
+watch(() => [props.html, props.css], render)
 </script>
 
-<style scoped lang="scss">
-.tabs {
-  &__header {
-    position: relative;
-  }
+<style scoped>
+.tab-button {
+  position: relative;
+  padding: 0.5rem 0.9rem;
+  border: none;
+  background: transparent;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #90a0b7;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
 
-  &__thumb {
-    display: inline-block;
-    position: absolute;
-    height: 4px;
-    bottom: -1px;
-    background-color: red;
-    transition: all 0.2s;
-  }
+.tab-button::after {
+  content: '';
+  position: absolute;
+  right: 0.5rem;
+  bottom: -1px;
+  left: 0.5rem;
+  height: 3px;
+  border-radius: 9999px 9999px 0 0;
+  background: transparent;
+  transition: background-color 0.15s ease;
+}
 
-  &__button {
-  }
+.tab-button:hover {
+  color: var(--color-brand);
+}
+
+.tab-button--active {
+  color: var(--color-brand);
+}
+
+.tab-button--active::after {
+  background: var(--color-brand);
 }
 </style>

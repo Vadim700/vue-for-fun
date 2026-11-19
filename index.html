@@ -1,21 +1,40 @@
 <!doctype html>
-<html lang="">
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#bb1017" />
+    <meta
+      name="description"
+      content="Vue for Fun — a Vue 3 pet project with posts, a kanban board, UI components, Only CSS experiments and a gallery."
+    />
 
-<head>
-  <meta charset="UTF-8" />
-  <link rel="icon" href="/favicon.ico" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="src/style.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
-    rel="stylesheet">
-  <title>Vite App</title>
-</head>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-<body>
-  <div id="app"></div>
-  <script type="module" src="/src/main.js"></script>
-</body>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400..900&display=swap"
+      rel="stylesheet"
+    />
 
+    <title>Vue for Fun — interactive playground</title>
+
+    <style>
+      /* Minimal critical CSS: avoids a white flash before the main stylesheet loads */
+      html {
+        background: #fdf6ec;
+      }
+
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
 </html>

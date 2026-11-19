@@ -1,39 +1,40 @@
 <template>
-  <div class="grid grid-cols-3 gap-4" ref="constraintsRef">
-    <div class="">
-      <h2 class="text-white text-2xl text-center mb-2">To do</h2>
+  <div ref="constraintsRef" class="grid grid-cols-1 gap-4 md:grid-cols-3">
+    <div>
+      <h2 class="mb-2 text-center text-2xl font-bold">To do</h2>
       <ul>
         <li v-for="todo of toDo" :key="todo.id">
           <TodoItem :todo="todo" />
         </li>
       </ul>
     </div>
-    <div class="">
-      <h2 class="text-white text-2xl text-center mb-2">In progress</h2>
+
+    <div>
+      <h2 class="mb-2 text-center text-2xl font-bold">In progress</h2>
       <ul>
         <motion.li
-          v-for="todo of todos"
+          v-for="todo of activeTodos"
           :key="todo.id"
           drag
-          :dragConstraints="constraintsRef"
+          :drag-constraints="constraintsRef"
           @drag="handleDrag"
-          @dragStart="handleDragStart"
-          @dragEnd="handleDragEnd"
+          @drag-end="handleDragEnd"
         >
           <TodoItem :todo="todo" />
         </motion.li>
       </ul>
     </div>
-    <div class="">
-      <h2 class="text-white text-2xl text-center mb-2">Completed</h2>
+
+    <div>
+      <h2 class="mb-2 text-center text-2xl font-bold">Completed</h2>
       <Reorder.Group v-model:values="completedTodos" axis="y">
         <Reorder.Item
-          :data-index="i"
-          v-for="(todo, i) of completedTodos"
+          v-for="(todo, index) of completedTodos"
           :key="todo.id"
           :value="todo"
+          :data-index="index"
         >
-          <TodoItem :todo="todo" :completedCol="true" />
+          <TodoItem :todo="todo" :completed-col="true" />
         </Reorder.Item>
       </Reorder.Group>
     </div>
@@ -42,19 +43,20 @@
 
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
-import { motion, useScroll, Reorder, useMotionValue } from 'motion-v'
+import { motion, Reorder, useDomRef } from 'motion-v'
 import TodoItem from './TodoItem.vue'
 import { useTodoStore } from '@/stores/todos'
-import { useDomRef } from 'motion-v'
-import { useRaisedShadow } from '@/use/useRaisedShadow'
 
 const store = useTodoStore()
-onMounted(() => store.fetchData())
-const todos = computed(() => store.todos)
-const y = useMotionValue(0)
-const boxShadow = useRaisedShadow(y)
+const constraintsRef = useDomRef()
 
-const constraintsRef = useDomRef() // не позволяет вылетать элементам при D&D за пределеы этого ref
+onMounted(() => {
+  if (!store.todos.length) store.fetchData()
+})
+
+const todos = computed(() => store.todos)
+const activeTodos = computed(() => todos.value.filter((todo) => !todo.completed))
+const toDo = computed(() => todos.value.filter((todo) => !todo.completed))
 
 const completedTodos = ref([])
 watch(
@@ -65,18 +67,11 @@ watch(
   { immediate: true },
 )
 
-const completed = computed(() => todos.value.filter((todo) => todo.completed))
-const values = todos.value.map((i) => i.id)
-
-const toDo = computed(() => todos.value.filter((todo) => !todo.completed))
-
-const handleDragStart = (event, info) => {}
-
-const handleDrag = (event, info) => {
+const handleDrag = (event) => {
   event.target.closest('li')?.classList.add('draged')
 }
 
-const handleDragEnd = (event, info) => {
+const handleDragEnd = (event) => {
   event.target.closest('li')?.classList.remove('draged')
 }
 </script>

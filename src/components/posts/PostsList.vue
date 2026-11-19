@@ -1,308 +1,294 @@
 <template>
-  <div class="list" ref="listRef">
-    <div
-      v-for="item of positionedItems"
-      @click="handleClick(item.id)"
+  <div class="relative w-full" :class="isDesktop ? 'aspect-[3/1]' : 'aspect-[3/4]'">
+    <button
+      v-for="(item, index) in items"
       :key="item.id"
-      class="list__item"
-      :class="{ list__item_active: item.active }"
-      :data-item-id="item.id"
-      :style="{
-        left: item.left,
-        top: item.top,
-        width: item.width,
-        height: item.height,
-      }"
+      type="button"
+      class="post-tile group absolute p-1 focus-visible:outline-offset-4"
+      :class="{ 'z-10': item.active }"
+      :style="tileStyle(index, item)"
+      :aria-pressed="item.active"
+      :aria-label="`Show post ${item.id}`"
+      @click="select(item.id)"
     >
-      <img :src="getImageSrc(item.id)" :alt="'Post ' + item.id" />
-    </div>
+      <span
+        class="relative block h-full w-full overflow-hidden rounded-xl bg-black/10 transition-[box-shadow] duration-300"
+        :class="{ 'shadow-float ring-2 ring-white/80': item.active }"
+      >
+        <img
+          :src="sources[item.id]"
+          :alt="`Plant Shop promo post #${item.id}`"
+          :loading="item.active ? 'eager' : 'lazy'"
+          :fetchpriority="item.active ? 'high' : 'auto'"
+          decoding="async"
+          class="h-full w-full object-cover transition duration-500 ease-out group-hover:scale-[1.04]"
+        />
+
+        <span
+          class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+          aria-hidden="true"
+        />
+        <span
+          class="bg-paper/90 text-brand absolute bottom-2 left-2 rounded-full px-2 py-0.5 text-[10px] font-extrabold"
+        >
+          0{{ item.id }}
+        </span>
+      </span>
+    </button>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
+import { computed, ref } from 'vue'
+import { useMediaQuery } from '@/use/useMediaQuery'
 
-const items = ref([
-  { id: 1, active: true },
-  { id: 2, active: false },
-  { id: 3, active: false },
-  { id: 4, active: false },
-  { id: 5, active: false },
-  { id: 6, active: false },
-  { id: 7, active: false },
-  { id: 8, active: false },
-  { id: 9, active: false },
-])
+import post1 from '@/assets/optimized/post-1.jpg'
+import post2 from '@/assets/optimized/post-2.jpg'
+import post3 from '@/assets/optimized/post-3.jpg'
+import post4 from '@/assets/optimized/post-4.jpg'
+import post5 from '@/assets/optimized/post-5.jpg'
+import post6 from '@/assets/optimized/post-6.jpg'
+import post7 from '@/assets/optimized/post-7.jpg'
+import post8 from '@/assets/optimized/post-8.jpg'
+import post9 from '@/assets/optimized/post-9.jpg'
 
-const elWidth = ref(0)
-const listRef = ref(null)
-const itemsPerRow = 6
-const previousActiveId = ref(null)
+const sources = {
+  1: post1,
+  2: post2,
+  3: post3,
+  4: post4,
+  5: post5,
+  6: post6,
+  7: post7,
+  8: post8,
+  9: post9,
+}
 
-const updateElementWidth = () => {
-  if (listRef.value) {
-    const { width } = listRef.value.getBoundingClientRect()
-    elWidth.value = width / itemsPerRow
+// [column, row] positions for the 6×2 desktop grid. The active tile spans 2×2.
+const LAYOUTS = {
+  1: [
+    [0, 0],
+    [2, 0],
+    [3, 0],
+    [4, 0],
+    [5, 0],
+    [2, 1],
+    [3, 1],
+    [4, 1],
+    [5, 1],
+  ],
+  2: [
+    [0, 0],
+    [1, 0],
+    [3, 0],
+    [4, 0],
+    [5, 0],
+    [0, 1],
+    [3, 1],
+    [4, 1],
+    [5, 1],
+  ],
+  3: [
+    [0, 0],
+    [1, 0],
+    [2, 0],
+    [4, 0],
+    [5, 0],
+    [0, 1],
+    [1, 1],
+    [4, 1],
+    [5, 1],
+  ],
+  4: [
+    [0, 0],
+    [1, 0],
+    [2, 0],
+    [3, 0],
+    [5, 0],
+    [0, 1],
+    [1, 1],
+    [2, 1],
+    [5, 1],
+  ],
+  // For tiles 5 and 6 the layout depends on the previously active tile
+  5: {
+    forward: [
+      [0, 0],
+      [1, 0],
+      [2, 0],
+      [3, 0],
+      [4, 0],
+      [0, 1],
+      [1, 1],
+      [2, 1],
+      [3, 1],
+    ],
+    backward: [
+      [2, 0],
+      [3, 0],
+      [4, 0],
+      [5, 0],
+      [0, 0],
+      [2, 1],
+      [3, 1],
+      [4, 1],
+      [5, 1],
+    ],
+  },
+  6: {
+    forward: [
+      [2, 0],
+      [3, 0],
+      [4, 0],
+      [5, 0],
+      [2, 1],
+      [0, 0],
+      [3, 1],
+      [4, 1],
+      [5, 1],
+    ],
+    backward: [
+      [0, 0],
+      [3, 0],
+      [4, 0],
+      [5, 0],
+      [0, 1],
+      [1, 0],
+      [3, 1],
+      [4, 1],
+      [5, 1],
+    ],
+  },
+  7: [
+    [0, 0],
+    [1, 0],
+    [4, 0],
+    [5, 0],
+    [0, 1],
+    [1, 1],
+    [2, 0],
+    [4, 1],
+    [5, 1],
+  ],
+  8: [
+    [0, 0],
+    [1, 0],
+    [2, 0],
+    [5, 0],
+    [0, 1],
+    [1, 1],
+    [2, 1],
+    [3, 0],
+    [5, 1],
+  ],
+  9: [
+    [0, 0],
+    [1, 0],
+    [2, 0],
+    [3, 0],
+    [0, 1],
+    [1, 1],
+    [2, 1],
+    [3, 1],
+    [4, 0],
+  ],
+}
+
+const items = ref(
+  Array.from({ length: 9 }, (_, index) => ({
+    id: index + 1,
+    active: index === 0,
+  })),
+)
+
+const previousActiveId = ref(1)
+const isDesktop = useMediaQuery('(min-width: 640px)')
+
+const activeId = computed(() => items.value.find((item) => item.active)?.id ?? 1)
+
+const desktopLayout = computed(() => {
+  const id = activeId.value
+
+  if (id === 5) {
+    return previousActiveId.value <= 5 ? LAYOUTS[5].forward : LAYOUTS[5].backward
+  }
+
+  if (id === 6) {
+    return previousActiveId.value < 5 ? LAYOUTS[6].forward : LAYOUTS[6].backward
+  }
+
+  return LAYOUTS[id]
+})
+
+/**
+ * Mobile layout: 3 columns × 4 rows, active tile at the top-left (2×2).
+ * The rest fill the free cells row by row, so every change still animates.
+ */
+const mobileLayout = computed(() => {
+  const columns = 3
+  const rows = 4
+  const occupied = Array.from({ length: rows }, () => Array(columns).fill(false))
+  const positions = []
+  const activeIndex = items.value.findIndex((item) => item.active)
+
+  for (let row = 0; row < 2; row += 1) {
+    for (let col = 0; col < 2; col += 1) occupied[row][col] = true
+  }
+  positions[activeIndex] = { col: 0, row: 0 }
+
+  let row = 0
+  let col = 0
+
+  items.value.forEach((_, index) => {
+    if (index === activeIndex) return
+
+    while (row < rows && occupied[row][col]) {
+      col += 1
+      if (col >= columns) {
+        col = 0
+        row += 1
+      }
+    }
+
+    positions[index] = { col, row }
+    if (row < rows) occupied[row][col] = true
+  })
+
+  return positions
+})
+
+const tileStyle = (index, item) => {
+  const columns = isDesktop.value ? 6 : 3
+  const rows = isDesktop.value ? 2 : 4
+  const span = item.active ? 2 : 1
+
+  const cell = isDesktop.value
+    ? { col: desktopLayout.value[index]?.[0] ?? 0, row: desktopLayout.value[index]?.[1] ?? 0 }
+    : (mobileLayout.value[index] ?? { col: 0, row: 0 })
+
+  return {
+    left: `${(cell.col / columns) * 100}%`,
+    top: `${(cell.row / rows) * 100}%`,
+    width: `${(span / columns) * 100}%`,
+    height: `${(span / rows) * 100}%`,
   }
 }
 
-const getImageSrc = (id) => new URL(`../../assets/Post ${id}.png`, import.meta.url).href
+const select = (id) => {
+  const current = items.value.find((item) => item.active)
+  if (current && current.id === id) return
 
-const positionedItems = computed(() => {
-  if (elWidth.value === 0) return items.value
-
-  const activeItem = items.value.find((item) => item.active)
-  const result = []
-  let grid = []
-
-  // [x, y]
-  switch (activeItem.id) {
-    case 1:
-      grid = [
-        [0, 0],
-        [2, 0],
-        [3, 0],
-        [4, 0],
-        [5, 0],
-        [2, 1],
-        [3, 1],
-        [4, 1],
-        [5, 1],
-      ]
-      break
-
-    case 2:
-      grid = [
-        [0, 0],
-        [1, 0],
-        [3, 0],
-        [4, 0],
-        [5, 0],
-        [0, 1],
-        [3, 1],
-        [4, 1],
-        [5, 1],
-      ]
-      break
-
-    case 3:
-      grid = [
-        [0, 0],
-        [1, 0],
-        [2, 0],
-        [4, 0],
-        [5, 0],
-        [0, 1],
-        [1, 1],
-        [4, 1],
-        [5, 1],
-      ]
-      break
-
-    case 4:
-      grid = [
-        [0, 0],
-        [1, 0],
-        [2, 0],
-        [3, 0],
-        [5, 0],
-        [0, 1],
-        [1, 1],
-        [2, 1],
-        [5, 1],
-      ]
-      break
-
-    case 5:
-      if (previousActiveId.value !== null && previousActiveId.value <= 5) {
-        grid = [
-          [0, 0],
-          [1, 0],
-          [2, 0],
-          [3, 0],
-          [4, 0],
-          [0, 1],
-          [1, 1],
-          [2, 1],
-          [3, 1],
-        ]
-      } else {
-        grid = [
-          [2, 0],
-          [3, 0],
-          [4, 0],
-          [5, 0],
-          [0, 0],
-          [2, 1],
-          [3, 1],
-          [4, 1],
-          [5, 1],
-        ]
-      }
-      break
-
-    case 6:
-      if (previousActiveId.value !== null && previousActiveId.value < 5) {
-        grid = [
-          [2, 0],
-          [3, 0],
-          [4, 0],
-          [5, 0],
-          [2, 1],
-          [0, 0],
-          [3, 1],
-          [4, 1],
-          [5, 1],
-        ]
-      } else {
-        grid = [
-          [0, 0],
-          [3, 0],
-          [4, 0],
-          [5, 0],
-          [0, 1],
-          [1, 0],
-          [3, 1],
-          [4, 1],
-          [5, 1],
-        ]
-      }
-
-      break
-
-    case 7:
-      grid = [
-        [0, 0],
-        [1, 0],
-        [4, 0],
-        [5, 0],
-        [0, 1],
-        [1, 1],
-        [2, 0],
-        [4, 1],
-        [5, 1],
-      ]
-      break
-
-    case 8:
-      grid = [
-        [0, 0],
-        [1, 0],
-        [2, 0],
-        [5, 0],
-        [0, 1],
-        [1, 1],
-        [2, 1],
-        [3, 0],
-        [5, 1],
-      ]
-      break
-
-    case 9:
-      grid = [
-        [0, 0],
-        [1, 0],
-        [2, 0],
-        [3, 0],
-        [0, 1],
-        [1, 1],
-        [2, 1],
-        [3, 1],
-        [4, 0],
-      ]
-      break
-
-    default:
-      grid = [
-        [0, 0],
-        [2, 0],
-        [3, 0],
-        [4, 0],
-        [5, 0],
-        [2, 1],
-        [3, 1],
-        [4, 1],
-        [5, 1],
-      ]
-  }
-
-  for (let i = 0; i < items.value.length; i++) {
-    const item = { ...items.value[i] }
-    const isActive = item.active
-
-    // Ширина и высота элемента
-    const elementWidth = isActive ? elWidth.value.toFixed(1) * 2 : elWidth.value.toFixed(1)
-    const elementHeight = isActive ? elWidth.value.toFixed(1) * 2 : elWidth.value.toFixed(1)
-
-    let left = (grid[i][0] * elWidth.value).toFixed(1)
-    let top = (grid[i][1] * elWidth.value).toFixed(1)
-
-    item.left = `${left}px`
-    item.top = `${top}px`
-    item.width = `${elementWidth - 8}px`
-    item.height = `${elementHeight - 8}px`
-
-    result.push(item)
-  }
-
-  return result
-})
-
-const handleClick = (id) => {
-  // Сохраняем текущий активный элемент как предыдущий
-  const currentActive = items.value.find((item) => item.active)
-  if (currentActive) {
-    previousActiveId.value = currentActive.id
-  }
-
-  // Обновляем активный элемент
-  items.value = items.value.map((item) => ({
-    ...item,
-    active: item.id === id,
-  }))
+  if (current) previousActiveId.value = current.id
+  items.value = items.value.map((item) => ({ ...item, active: item.id === id }))
 }
-
-onMounted(() => {
-  updateElementWidth()
-  window.addEventListener('resize', updateElementWidth)
-
-  const initialActive = items.value.find((item) => item.active)
-  if (initialActive) {
-    previousActiveId.value = initialActive.id
-  }
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', updateElementWidth)
-})
 </script>
 
-<style scoped lang="scss">
-.list {
-  position: relative;
-  width: 100%;
-  height: 650px; // Высота для 3 рядов
-  margin: 0 auto;
-  border-radius: 12px;
-  overflow: hidden;
-  box-sizing: border-box;
-
-  &__item {
-    display: grid;
-    place-content: center;
-    position: absolute;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    box-sizing: border-box;
-    font-size: 1.2em;
-    font-weight: bold;
-    border: 3px solid transparent;
-
-    &_active {
-      color: white;
-      z-index: 10;
-    }
-  }
+<style scoped>
+.post-tile {
+  transition:
+    left 0.4s cubic-bezier(0.22, 0.7, 0.3, 1),
+    top 0.4s cubic-bezier(0.22, 0.7, 0.3, 1),
+    width 0.4s cubic-bezier(0.22, 0.7, 0.3, 1),
+    height 0.4s cubic-bezier(0.22, 0.7, 0.3, 1);
 }
 </style>

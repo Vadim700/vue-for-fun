@@ -1,32 +1,30 @@
-import postsService from '@/services/postsService';
-import { defineStore } from 'pinia';
+import postsService from '@/services/postsService'
+import { defineStore } from 'pinia'
 
 export const useTodoStore = defineStore('todoStore', {
   state: () => ({
     todos: [],
   }),
 
-
   getters: {
-    getTodoList: () => this.todos,
-    getCompleted: () => this.todos.filter(todo => todo.comleted),
-    getActiveTodos: () => this.todos.filter(todo => !todo.comleted),
-    getTodoById: (id) => this.todos.filter(todo => todo.id === id)
+    getTodoList: (state) => state.todos,
+    getCompleted: (state) => state.todos.filter((todo) => todo.completed),
+    getActiveTodos: (state) => state.todos.filter((todo) => !todo.completed),
+    getTodoById: (state) => (id) => state.todos.find((todo) => todo.id === id),
   },
 
-
   actions: {
-    async fetchData() {
+    fetchData() {
       this.todos = postsService.fetchTodos()
     },
 
     toggleTodo(id) {
-      const founded = this.todos.find(todo => todo.id === id);
-      if (founded) {
-        founded.completed = !founded.completed
-      }
-    }
+      const todo = this.todos.find((item) => item.id === id)
+      if (todo) todo.completed = !todo.completed
+    },
   },
 
-  repsist: true
+  persist: {
+    key: 'vue-for-fun:todos',
+  },
 })

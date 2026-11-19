@@ -1,52 +1,50 @@
 <template>
-  <div
+  <article
     class="kanban-card"
     :class="{ 'is-dragging': isDragging }"
     draggable="true"
+    :style="{ '--accent': color }"
     @dragstart="handleDragStart"
     @dragend="handleDragEnd"
   >
-    <div class="card-content">
-      <p class="card-title">{{ task.title }}</p>
-      <button class="delete-btn" @click="emit('delete', task.id)" title="Delete task">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path
-            d="M12 4L4 12M4 4L12 12"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-          />
-        </svg>
-      </button>
-    </div>
-  </div>
+    <p class="card-title">{{ task.title }}</p>
+
+    <button
+      type="button"
+      class="delete-btn"
+      title="Delete task"
+      aria-label="Delete task"
+      @click="emit('delete', task.id)"
+    >
+      <X :size="14" />
+    </button>
+  </article>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { ref } from 'vue'
+import { X } from 'lucide-vue-next'
 
-interface Task {
-  id: string
-  title: string
-  status: 'todo' | 'in_progress' | 'completed' | 'stop'
-  position: number
-}
+const props = defineProps({
+  task: {
+    type: Object,
+    required: true,
+  },
+  color: {
+    type: String,
+    default: '#3b82f6',
+  },
+})
 
-const props = defineProps<{
-  task: Task
-}>()
-
-const emit = defineEmits<{
-  delete: [id: string]
-}>()
+const emit = defineEmits(['delete'])
 
 const isDragging = ref(false)
 
-const handleDragStart = (e: DragEvent) => {
+const handleDragStart = (event) => {
   isDragging.value = true
-  e.dataTransfer!.effectAllowed = 'move'
-  e.dataTransfer!.setData('taskId', props.task.id)
-  e.dataTransfer!.setData('fromStatus', props.task.status)
+  event.dataTransfer.effectAllowed = 'move'
+  event.dataTransfer.setData('taskId', props.task.id)
+  event.dataTransfer.setData('fromStatus', props.task.status)
 }
 
 const handleDragEnd = () => {
@@ -56,22 +54,37 @@ const handleDragEnd = () => {
 
 <style scoped>
 .kanban-card {
-  background: white;
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding: 10px 10px 10px 14px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgb(33 36 41 / 0.08);
   cursor: grab;
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s,
-    opacity 0.2s;
   user-select: none;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.kanban-card::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 6px;
+  width: 3px;
+  border-radius: 9999px;
+  background: var(--accent);
 }
 
 .kanban-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px -12px rgb(33 36 41 / 0.45);
 }
 
 .kanban-card:active {
@@ -79,46 +92,42 @@ const handleDragEnd = () => {
 }
 
 .kanban-card.is-dragging {
-  opacity: 0.5;
-}
-
-.card-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
+  opacity: 0.45;
 }
 
 .card-title {
-  margin: 0;
-  font-size: 14px;
-  line-height: 1.5;
-  color: #1a1a1a;
   flex: 1;
-  word-break: break-word;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  font-weight: 600;
+  color: #212429;
+  overflow-wrap: anywhere;
 }
 
 .delete-btn {
-  background: none;
-  border: none;
-  padding: 4px;
-  cursor: pointer;
-  color: #999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  transition: all 0.2s;
+  display: grid;
   flex-shrink: 0;
+  place-content: center;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #90a0b7;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .delete-btn:hover {
-  background: #fee;
-  color: #e53e3e;
+  background: #fee2e2;
+  color: #dc2626;
 }
 
-.delete-btn:focus {
-  outline: 2px solid #e53e3e;
-  outline-offset: 2px;
+.delete-btn:focus-visible {
+  outline: 2px solid #f0b100;
+  outline-offset: 1px;
 }
 </style>

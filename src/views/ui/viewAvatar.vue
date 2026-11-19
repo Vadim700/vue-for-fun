@@ -1,20 +1,28 @@
 <template>
-  <div class="grid grid-rows-[auto_1fr]">
-    <h2 class="text-3xl mb-4 text-center">Avatar</h2>
+  <section>
+    <header class="mb-8">
+      <p class="eyebrow">UI · Element</p>
+      <h2 class="page-title mt-1 text-2xl sm:text-3xl">Avatar</h2>
+      <p class="page-subtitle">
+        A round avatar with object-fit: cover — the image never distorts, whatever its source size.
+      </p>
+    </header>
 
-    <Avatar class="m-auto"/>
-  </div>
+    <div class="card grid place-items-center px-6 py-14">
+      <Avatar class="scale-125" />
+    </div>
 
-  <VTabs :html :css />
+    <Tabs :html :css />
+  </section>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import Avatar from '@/components/shared/Avatar.vue'
-import VTabs from '@/components/shared/vTabs.vue'
+import Tabs from '@/components/shared/vTabs.vue'
 
 const html = `
 <div class="avatar">
-	<img class="avatar__img" src="path/to/image" alt="Аватар">
+	<img class="avatar__img" src="path/to/image" alt="Avatar">
 </div>
 `
 

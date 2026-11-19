@@ -17,20 +17,29 @@ export default defineConfig([
       globals: {
         ...globals.browser,
       },
-      rules: {
-        "no-unused-vars": ["error", {
-          "vars": "all",
-          "args": "after-used",
-          "caughtErrors": "all",
-          "ignoreRestSiblings": false,
-          "ignoreUsingDeclarations": false,
-          "reportUsedIgnorePattern": false
-        }]
-      }
     },
   },
 
   js.configs.recommended,
   ...pluginVue.configs['flat/essential'],
+
+  // Наши правила идут после рекомендованных конфигов, чтобы переопределять их
+  {
+    name: 'app/rules',
+    rules: {
+      'no-unused-vars': [
+        'error',
+        {
+          vars: 'all',
+          args: 'after-used',
+          caughtErrors: 'all',
+          ignoreRestSiblings: false,
+        },
+      ],
+      // В пет-проекте есть компоненты с именами из одного слова
+      'vue/multi-word-component-names': 'off',
+    },
+  },
+
   skipFormatting,
 ])
